@@ -67,13 +67,7 @@ export default function HomePage() {
                 {restaurants.length} restaurante{restaurants.length !== 1 ? 's' : ''} encontrado
                 {restaurants.length !== 1 ? 's' : ''}
               </p>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                  gap: 20
-                }}
-              >
+              <div className="restaurant-grid">
                 {restaurants.map((r) => (
                   <RestaurantCard key={r.id} restaurant={r} />
                 ))}
