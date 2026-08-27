@@ -1,16 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 import { chatApi } from '../api/resources';
+import { useAuth, CHAT_PENDING_GREETING_KEY } from '../context/AuthContext';
 import RestaurantCard from './RestaurantCard';
 
 let nextId = 1;
 
+const WELCOME_MESSAGE =
+  '¡Hola! 👋 Soy el asistente de recomendaciones de GSI. Cuéntame qué se te antoja — ' +
+  'zona, presupuesto, tipo de comida o si necesitas parqueadero cerca — y te propongo ' +
+  'opciones reales de nuestro catálogo de restaurantes.';
+
 export default function ChatRecommender() {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const scrollRef = useRef(null);
+
+  // Saludo automático: persistSession() en AuthContext deja esta marca SOLO en un
+  // login/registro real (nunca al restaurar sesión desde un token guardado al
+  // recargar la página). La consumimos apenas se muestra, así que no se repite ni
+  // al navegar entre páginas ni al refrescar con la sesión ya activa.
+  useEffect(() => {
+    if (!user) return;
+    if (sessionStorage.getItem(CHAT_PENDING_GREETING_KEY) !== '1') return;
+
+    const timer = setTimeout(() => {
+      sessionStorage.removeItem(CHAT_PENDING_GREETING_KEY);
+      setMessages((prev) => [...prev, { id: nextId++, role: 'assistant', text: WELCOME_MESSAGE, recommendations: [] }]);
+      setOpen(true);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [user]);
 
   useEffect(() => {
     if (!scrollRef.current) return;
