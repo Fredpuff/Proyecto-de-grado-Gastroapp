@@ -367,3 +367,218 @@ img {
     padding: 0 16px;
   }
 }
+
+/* --- Chat de recomendaciones con IA --- */
+.chat-widget {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.chat-bubble-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 24px;
+  border: none;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chat-bubble-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.chat-panel {
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  height: 480px;
+  max-height: calc(100vh - 120px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.chat-header h4 {
+  margin: 0;
+  color: #fff;
+  font-size: 15px;
+}
+.chat-header p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--color-primary-light);
+}
+.chat-header-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px;
+  opacity: 0.85;
+}
+.chat-header-close:hover {
+  opacity: 1;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--color-surface-alt);
+  min-height: 0;
+}
+
+.chat-empty-hint {
+  color: var(--color-text-muted);
+  font-size: 13.5px;
+  text-align: center;
+  margin: auto 0;
+  padding: 10px;
+}
+
+.chat-msg {
+  max-width: 88%;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-msg-user {
+  align-self: flex-end;
+  background: var(--color-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.chat-msg-ai {
+  align-self: flex-start;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-recommendations {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-rec-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+/* La tarjeta reutiliza RestaurantCard tal cual (con sus estilos inline de
+   layout), solo se recorta la imagen para que quepa cómoda en el panel. */
+.chat-rec-card .restaurant-card-media {
+  aspect-ratio: 3 / 1;
+}
+.chat-rec-card .restaurant-card-body {
+  padding: 10px 12px;
+}
+.chat-rec-card .restaurant-card-title-row h3 {
+  font-size: 14.5px;
+}
+.chat-rec-reason {
+  font-size: 12.5px;
+  color: var(--color-olive-dark);
+  background: var(--color-olive-light);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  margin: 0;
+}
+
+.chat-typing {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.chat-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  animation: chat-typing-bounce 1s infinite ease-in-out;
+}
+.chat-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.chat-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes chat-typing-bounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.chat-input-row {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.chat-input-row input {
+  flex: 1;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 13.5px;
+}
+.chat-input-row input:focus {
+  outline: 2px solid var(--color-olive);
+  outline-offset: 1px;
+}
+
+@media (max-width: 480px) {
+  .chat-widget {
+    right: 12px;
+    bottom: 12px;
+  }
+  .chat-panel {
+    width: calc(100vw - 24px);
+    height: calc(100vh - 100px);
+  }
+}

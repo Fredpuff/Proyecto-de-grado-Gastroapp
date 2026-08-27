@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
+import ChatRecommender from './components/ChatRecommender';
 import HomePage from './pages/HomePage';
 import RestaurantDetailPage from './pages/RestaurantDetailPage';
 import LoginPage from './pages/LoginPage';
@@ -8,8 +9,11 @@ import RegisterPage from './pages/RegisterPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminRestaurantEditPage from './pages/AdminRestaurantEditPage';
 import NotFoundPage from './pages/NotFoundPage';
+import { useAuth } from './context/AuthContext';
 
 export default function App() {
+  const { user } = useAuth();
+
   return (
     <>
       <Navbar />
@@ -38,6 +42,7 @@ export default function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
+      {user && <ChatRecommender />}
     </>
   );
 }

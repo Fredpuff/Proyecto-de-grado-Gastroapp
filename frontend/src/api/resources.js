@@ -40,3 +40,8 @@ export const reviewsApi = {
   listByRestaurant: (restaurantId) => api.get(`/restaurants/${restaurantId}/reviews`),
   create: (restaurantId, payload) => api.post(`/restaurants/${restaurantId}/reviews`, payload, { auth: true })
 };
+
+export const chatApi = {
+  recommend: (message, conversationHistory) =>
+    api.post('/chat/recommend', { message, conversationHistory }, { auth: true })
+};

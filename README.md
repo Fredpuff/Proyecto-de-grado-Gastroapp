@@ -90,6 +90,8 @@ API disponible en `http://localhost:4000/api`. Healthcheck: `GET /api/health`.
 - `GET|POST /api/restaurants/:id/menu`, `PUT|DELETE /api/menu/:id` (admin dueño)
 - `GET|POST /api/restaurants/:id/reviews` (usuario logueado)
 - `GET|POST /api/parkings`, `PUT|DELETE /api/parkings/:id` (admin)
+- `POST /api/chat/recommend` (usuario logueado) — chat de recomendaciones con IA,
+  ver sección "Chat de recomendaciones con IA" más abajo
 
 ## 2. Frontend
 
@@ -132,6 +134,24 @@ App disponible en `http://localhost:5173`.
   almacena en el backend.
 - El mapa usa tiles públicos de OpenStreetMap (sin API key) — solo requiere
   conexión a internet en el navegador.
+
+## Chat de recomendaciones con IA
+
+`POST /api/chat/recommend` recibe `{ message, conversationHistory }` y responde
+con una recomendación de 2-3 restaurantes reales. Para evitar alucinaciones,
+el modelo nunca elige libremente:
+
+1. El backend extrae criterios simples del mensaje (zona, precio, parqueadero,
+   wifi, tipo de cocina) con reglas de palabras clave y arma un pre-filtro SQL
+   amplio sobre `restaurants` (si algo no se reconoce, no se filtra por eso).
+2. Los candidatos (máx. 15, con reseñas destacadas) se pasan como contexto al
+   modelo (`claude-sonnet-5`), que solo puede responder con IDs de esa lista.
+3. El backend valida la respuesta del modelo y descarta cualquier
+   `restaurant_id` que no esté entre los candidatos antes de devolverla.
+4. Si la API de Anthropic falla, no está configurada, o responde algo que no
+   se puede interpretar, el endpoint responde igual con restaurantes reales
+   (los mejor calificados del pre-filtro) y un mensaje de aviso, en vez de
+   fallar. Ver `GUIA-COLABORADOR.md` para configurar `ANTHROPIC_API_KEY`.
 
 ## Notas de alcance (Fase 1)
 

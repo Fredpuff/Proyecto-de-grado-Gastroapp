@@ -197,10 +197,11 @@ esta fase a propósito, según el alcance original del proyecto.
 backend/
   sql/schema.sql          → todas las tablas y relaciones
   sql/seed.sql             → datos de ejemplo
-  src/controllers/         → lógica de cada recurso (restaurantes, menú, parqueaderos, reseñas, auth)
+  src/controllers/         → lógica de cada recurso (restaurantes, menú, parqueaderos, reseñas, auth, chat)
   src/routes/               → qué URL llama a qué controlador
   src/middleware/auth.js    → verificación de JWT y roles
   src/utils/haversine.js    → cálculo de distancia entre coordenadas
+  src/controllers/chatController.js → chat de recomendaciones con IA (ver sección 10)
 
 frontend/
   src/pages/                 → una página por ruta (Home, Login, Admin, etc.)
@@ -228,6 +229,97 @@ necesite. Ese es el patrón que sigue todo el proyecto.
 | `403 No tienes permisos sobre este restaurante` | Estás logueado con un admin que no es dueño de esa ficha | Usa el admin correcto o crea tu propio restaurante primero |
 
 ---
+
+---
+
+## 10. Configurar el chat de recomendaciones con IA (paso a paso, para principiantes)
+
+El proyecto tiene un chat que usa la IA de Anthropic (Claude) para recomendar
+restaurantes. Para que funcione en tu computador necesitas darle una **API
+key** (una clave secreta que identifica tu cuenta de Anthropic). Sigue estos
+pasos exactamente:
+
+### 10.1. Consigue tu API key
+
+Entra a https://console.anthropic.com/ , crea una cuenta si no tienes, y
+genera una clave nueva. Es un texto largo que empieza por `sk-ant-...`.
+Cópialo — solo lo vas a ver una vez.
+
+### 10.2. En qué archivo y en qué carpeta va
+
+La clave va en el archivo `.env` del **backend** (no del frontend). La ruta
+completa, partiendo de la carpeta donde clonaste el proyecto, es:
+
+```
+Proyecto-de-grado-Gastroapp/backend/.env
+```
+
+Ese archivo ya debería existir si seguiste el paso 4 de esta guía (lo creaste
+con `cp .env.example .env`). Si no existe, créalo copiando
+`backend/.env.example` y renombrándolo a `.env`.
+
+### 10.3. Qué escribir dentro
+
+Abre `backend/.env` con cualquier editor de texto (VS Code, Notepad, etc.) y
+busca la línea `ANTHROPIC_API_KEY=` (ya está ahí, vacía, esperando tu clave).
+Pega tu clave justo después del signo `=`, sin espacios y sin comillas:
+
+```
+ANTHROPIC_API_KEY=sk-ant-tu-clave-real-aqui
+```
+
+Guarda el archivo.
+
+### 10.4. Cómo confirmar que el backend la está leyendo bien
+
+Levanta el backend como siempre (`cd backend` → `npm run dev`). En la
+terminal, justo después del mensaje `GSI backend escuchando en
+http://localhost:4000`, vas a ver una de estas dos líneas:
+
+- ✅ **Si todo está bien configurado:**
+  ```
+  Chat de recomendaciones con IA: ANTHROPIC_API_KEY detectada, listo para usarse.
+  ```
+- ⚠️ **Si falta la clave o el archivo `.env` no la tiene:**
+  ```
+  Chat de recomendaciones con IA: ANTHROPIC_API_KEY NO configurada. El endpoint
+  /api/chat/recommend funcionará en modo degradado (sin IA) hasta que la agregues
+  en backend/.env.
+  ```
+
+Ese mensaje aparece **una sola vez, al arrancar el servidor** — si editas el
+`.env` después, tienes que reiniciar el backend (`Ctrl+C` y `npm run dev` de
+nuevo) para que lo vuelva a leer.
+
+### 10.5. Qué vas a ver si algo está mal
+
+- **Si olvidaste poner la clave** (o dejaste `ANTHROPIC_API_KEY=` vacío): el
+  backend arranca igual (no se rompe nada), verás la advertencia ⚠️ de
+  arriba, y el chat va a seguir funcionando pero en "modo degradado": en vez
+  de una recomendación personalizada con explicación, el usuario recibe un
+  mensaje tipo *"No pude generar una recomendación personalizada en este
+  momento, pero aquí tienes algunas opciones bien valoradas..."* junto con
+  restaurantes reales (sin razones de la IA). No es un error visible para el
+  usuario, es un aviso honesto.
+- **Si pusiste la clave mal** (typo, clave vencida, clave de otra cuenta sin
+  crédito, etc.): el servidor sigue corriendo, pero cuando alguien use el
+  chat vas a ver en la terminal del backend una línea como:
+  ```
+  [chat] Error al generar recomendación con IA: <mensaje del error de Anthropic>
+  ```
+  y el usuario va a recibir el mismo mensaje de "modo degradado" descrito
+  arriba, nunca un error feo ni la app rota. Ese log en la terminal es tu
+  pista para saber que la clave está mal — revísala y reinicia el backend.
+
+### 10.6. Muy importante: nunca subas este archivo a GitHub
+
+El archivo `backend/.env` **nunca se debe subir a GitHub** — ya está listado
+en `.gitignore` (junto con cualquier otro `.env` del proyecto), así que un
+`git add .` normal no lo va a incluir. Aun así, antes de hacer `git push`,
+revisa con `git status` que no aparezca `backend/.env` en la lista de
+archivos — si alguna vez lo ves ahí, no lo subas y avisa, porque significaría
+que tu clave secreta (y las credenciales de la base de datos) quedarían
+públicas en el repositorio.
 
 Cualquier duda sobre por qué algo se decidió así (por ejemplo, por qué
 `rating_avg` se carga a mano y no se calcula), está explicado en los
