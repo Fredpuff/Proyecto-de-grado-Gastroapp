@@ -93,6 +93,16 @@ API disponible en `http://localhost:4000/api`. Healthcheck: `GET /api/health`.
 - `POST /api/chat/recommend` (usuario logueado) — chat de recomendaciones con IA,
   ver sección "Chat de recomendaciones con IA" más abajo
 
+### Recolección de datos reales (Google Places + scraping)
+
+`backend/scripts/collectRestaurantData.js` puebla la tabla `restaurants` con
+establecimientos reales de Villavicencio siguiendo la ficha de recolección del
+anteproyecto (Google Places API como fuente principal + scraping de páginas
+propias). Requiere `GOOGLE_PLACES_API_KEY` en `backend/.env`. Ver
+[`backend/README.md`](backend/README.md#recolección-de-datos-de-restaurantes-npm-run-collect-data)
+para el paso a paso (`npm run collect-data:places` para validar por zona,
+`npm run collect-data` para la carga completa).
+
 ## 2. Frontend
 
 ### Requisitos
@@ -129,9 +139,13 @@ App disponible en `http://localhost:5173`.
   con variables.
 
 ### Notas
-- El frontend no calcula el promedio de calificación de un restaurante: ese
-  campo se edita manualmente desde el panel de administrador, tal como se
-  almacena en el backend.
+- El frontend no calcula el promedio de calificación: lo hace el backend
+  (`backend/src/utils/ratingAvg.js`), combinando el rating de Google
+  recolectado por `collectRestaurantData.js` con las reseñas reales de
+  usuarios, cada vez que se recolectan datos o se publica una reseña. Un
+  restaurante cargado a mano y sin ninguna reseña conserva el valor que se le
+  puso en el panel de administrador hasta que reciba su primera reseña real o
+  se recolecten datos de Google para él.
 - El mapa usa tiles públicos de OpenStreetMap (sin API key) — solo requiere
   conexión a internet en el navegador.
 
@@ -155,8 +169,11 @@ el modelo nunca elige libremente:
 
 ## Notas de alcance (Fase 1)
 
-- `rating_avg` de cada restaurante se carga **manualmente** en el seed/admin,
-  no se calcula a partir de las reseñas todavía.
+- `rating_avg` se recalcula automáticamente (backend) combinando el rating de
+  Google con las reseñas reales de usuarios — ver
+  [`backend/README.md`](backend/README.md#calificación-combinada-estrellas).
+  Ya no es un valor puramente manual salvo para restaurantes sin ninguna
+  fuente de reseñas todavía.
 - Las reseñas solo se almacenan (texto + rating 1-5): no hay análisis de
   sentimiento ni resúmenes automáticos.
 - La cercanía de parqueaderos se calcula con la fórmula de Haversine sobre

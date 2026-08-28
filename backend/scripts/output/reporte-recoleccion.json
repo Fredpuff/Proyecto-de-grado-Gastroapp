@@ -1,0 +1,2454 @@
+{
+  "generado": "2026-08-28T22:50:40.460Z",
+  "ciudad": "Villavicencio",
+  "zonas_objetivo": [
+    "Centro Histórico",
+    "Barzal",
+    "La Rosita",
+    "Villacentro"
+  ],
+  "centroides_zonas": {
+    "Centro Histórico": {
+      "lat": 4.1519,
+      "lng": -73.6385
+    },
+    "Barzal": {
+      "lat": 4.14622,
+      "lng": -73.63869
+    },
+    "La Rosita": {
+      "lat": 4.11468,
+      "lng": -73.61112
+    },
+    "Villacentro": {
+      "lat": 4.13348,
+      "lng": -73.63779
+    }
+  },
+  "poblacion_objetivo": "Establecimientos de comida gourmet (restaurantes, cafés y afines) en Centro Histórico, Barzal, La Rosita y Villacentro de Villavicencio con presencia online verificable.",
+  "tecnica": "Censo / muestreo exhaustivo vía Google Places API (New) — Text Search restringido al área de cada zona — y scraping complementario de páginas propias. Zona asignada por dirección o por centroide más cercano (radio 1.6 km).",
+  "parametros": {
+    "dry_run": false,
+    "scraping": true,
+    "limit_por_zona": null,
+    "top": 25
+  },
+  "fase1_google_places": {
+    "total_encontrados": 293,
+    "resultados_por_consulta": {
+      "Centro Histórico · restaurante gourmet centro Villavicencio": 55,
+      "Centro Histórico · café centro histórico Villavicencio": 60,
+      "Barzal · restaurante gourmet Barzal Villavicencio": 27,
+      "Barzal · café Barzal Villavicencio": 60,
+      "La Rosita · restaurante gourmet La Rosita Villavicencio": 22,
+      "La Rosita · café La Rosita Villavicencio": 60,
+      "Villacentro · restaurante gourmet Villacentro Villavicencio": 60,
+      "Villacentro · café Villacentro Villavicencio": 18
+    },
+    "por_zona": {
+      "Centro Histórico": {
+        "encontrados": 69,
+        "cumplen_inclusion": 66,
+        "con_web_o_red": 26,
+        "con_dominio_propio": 8
+      },
+      "Barzal": {
+        "encontrados": 83,
+        "cumplen_inclusion": 72,
+        "con_web_o_red": 23,
+        "con_dominio_propio": 10
+      },
+      "La Rosita": {
+        "encontrados": 75,
+        "cumplen_inclusion": 65,
+        "con_web_o_red": 19,
+        "con_dominio_propio": 4
+      },
+      "Villacentro": {
+        "encontrados": 64,
+        "cumplen_inclusion": 62,
+        "con_web_o_red": 28,
+        "con_dominio_propio": 12
+      },
+      "Sin clasificar": {
+        "encontrados": 2,
+        "cumplen_inclusion": 2,
+        "con_web_o_red": 0,
+        "con_dominio_propio": 0
+      }
+    },
+    "cumplen_criterio_inclusion": 267,
+    "excluidos": [
+      {
+        "nombre": "AL'TOKE Restaurante Gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "LA FERMETTE GOURMET",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Fábrica de Lechona los reyes gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Maria's Gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Sazón Gourmet Food",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "RESTAURANTE GOURMET LA 34",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Toscano Café",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Café Origen Liliana Martínez",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Café fonzaque Villavicencio",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "CARFE ESTACION BARZAL",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Macondo Café - Restaurante",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "TERRANOVA BAR CAFE",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Tropical Station",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Punto maxichurros barzal",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Jugos Express",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Asadero y restaurante sabrosito gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Maiporé Restaurante Gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Rubio's Gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Tienda",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Mangos Pizza",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "cafeteria y licorera la estacion",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Mi Ranchito",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Cafeteria La Ballena",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "El Universitario",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Burgerman Villavicencio",
+        "motivo": "sin web y sin reseñas en Google"
+      },
+      {
+        "nombre": "Narkoss Gourmet",
+        "motivo": "sin web y sin reseñas en Google"
+      }
+    ]
+  },
+  "fase1_5_seleccion": {
+    "criterio": "Promedio bayesiano rating+nº de reseñas (evita que un rating alto con pocas reseñas gane a uno más bajo con muchas)",
+    "C_rating_promedio": 4.381818181818181,
+    "m_resenas_promedio": 202.125,
+    "objetivo_top": 25,
+    "seleccionados": 25,
+    "descartados_por_ranking": [
+      {
+        "nombre": "Sabor Bistró | Restaurante, Desayunos y Heladería en Villavicencio",
+        "rating": 4.8,
+        "resenas": 71,
+        "score": 4.490526315789473
+      },
+      {
+        "nombre": "Lechoneria Los Reyes",
+        "rating": 4.5,
+        "resenas": 2168,
+        "score": 4.489921417646749
+      },
+      {
+        "nombre": "Brownies Express",
+        "rating": 4.9,
+        "resenas": 52,
+        "score": 4.487850467289719
+      },
+      {
+        "nombre": "Love Restaurant",
+        "rating": 4.7,
+        "resenas": 100,
+        "score": 4.4871328092676865
+      },
+      {
+        "nombre": "VitaJuice Buque",
+        "rating": 4.6,
+        "resenas": 181,
+        "score": 4.484893964110929
+      },
+      {
+        "nombre": "Le Cine Cafe",
+        "rating": 4.9,
+        "resenas": 47,
+        "score": 4.479578524836929
+      },
+      {
+        "nombre": "Oliva Mediterránea",
+        "rating": 4.5,
+        "resenas": 796,
+        "score": 4.47606762680025
+      },
+      {
+        "nombre": "Cafeteria Bar El Resbalon Villavicencio",
+        "rating": 4.7,
+        "resenas": 84,
+        "score": 4.475229357798165
+      },
+      {
+        "nombre": "Bastimento Restaurante",
+        "rating": 4.5,
+        "resenas": 619,
+        "score": 4.47090881412696
+      },
+      {
+        "nombre": "La Cofradia Mediterranea",
+        "rating": 4.5,
+        "resenas": 580,
+        "score": 4.469458206808374
+      },
+      {
+        "nombre": "PERÚ SAZON",
+        "rating": 4.6,
+        "resenas": 135,
+        "score": 4.469187986651835
+      },
+      {
+        "nombre": "Terraza vvc Bistro",
+        "rating": 4.6,
+        "resenas": 128,
+        "score": 4.466414237031427
+      },
+      {
+        "nombre": "Mi Casa la 33",
+        "rating": 4.8,
+        "resenas": 50,
+        "score": 4.464749628160634
+      },
+      {
+        "nombre": "Monnet heladería",
+        "rating": 4.8,
+        "resenas": 50,
+        "score": 4.464749628160634
+      },
+      {
+        "nombre": "Nachos Grill del Camoa",
+        "rating": 4.5,
+        "resenas": 434,
+        "score": 4.462448418156808
+      },
+      {
+        "nombre": "Casa María Burger",
+        "rating": 4.7,
+        "resenas": 63,
+        "score": 4.457425742574257
+      },
+      {
+        "nombre": "Restaurante Tierra del Fuego",
+        "rating": 4.5,
+        "resenas": 358,
+        "score": 4.457353269359518
+      },
+      {
+        "nombre": "Nativo Gastro Market",
+        "rating": 4.9,
+        "resenas": 34,
+        "score": 4.456431974589729
+      },
+      {
+        "nombre": "Montea Coffee",
+        "rating": 5,
+        "resenas": 27,
+        "score": 4.454664484451717
+      },
+      {
+        "nombre": "RedPeppers Hamburguesas",
+        "rating": 4.5,
+        "resenas": 315,
+        "score": 4.453807106598985
+      },
+      {
+        "nombre": "Inca Restaurante",
+        "rating": 4.5,
+        "resenas": 260,
+        "score": 4.448309440086556
+      },
+      {
+        "nombre": "Gaia Coffee Wine and Brunch",
+        "rating": 4.8,
+        "resenas": 37,
+        "score": 4.446523784631468
+      },
+      {
+        "nombre": "El kasserolo",
+        "rating": 4.6,
+        "resenas": 77,
+        "score": 4.442006269592476
+      },
+      {
+        "nombre": "Chicago's Street Food",
+        "rating": 4.7,
+        "resenas": 42,
+        "score": 4.436559139784946
+      },
+      {
+        "nombre": "Coffe working villavicencio",
+        "rating": 4.5,
+        "resenas": 164,
+        "score": 4.434755889382041
+      },
+      {
+        "nombre": "Porongo Restaurante Cafe Bar",
+        "rating": 4.8,
+        "resenas": 29,
+        "score": 4.434288804759328
+      },
+      {
+        "nombre": "RESTAURANTE CURRAMBA LA BELLA",
+        "rating": 4.5,
+        "resenas": 160,
+        "score": 4.434035208836727
+      },
+      {
+        "nombre": "Coriburger Al Carbon",
+        "rating": 4.5,
+        "resenas": 136,
+        "score": 4.4293530499075775
+      },
+      {
+        "nombre": "nutribox",
+        "rating": 4.9,
+        "resenas": 19,
+        "score": 4.426342566421706
+      },
+      {
+        "nombre": "SIN AZÚCAR DELICIOSO/ postres keto/ tortas veganas/cup cakes centeno/ saludable/aptos para diabéticos/aptos para celiacos",
+        "rating": 4.8,
+        "resenas": 23,
+        "score": 4.424541921154913
+      },
+      {
+        "nombre": "Bra Kaffe & Bra Restaurang",
+        "rating": 4.7,
+        "resenas": 29,
+        "score": 4.421741481882098
+      },
+      {
+        "nombre": "Destro Coffee Brunch",
+        "rating": 4.6,
+        "resenas": 42,
+        "score": 4.419354838709677
+      },
+      {
+        "nombre": "A FUEGO ATR",
+        "rating": 5,
+        "resenas": 13,
+        "score": 4.419174898314933
+      },
+      {
+        "nombre": "PAELLAS A DOMICILIO VILLAVICENCIO",
+        "rating": 5,
+        "resenas": 12,
+        "score": 4.41646234676007
+      },
+      {
+        "nombre": "Modello Coworking",
+        "rating": 4.6,
+        "resenas": 33,
+        "score": 4.412440191387559
+      },
+      {
+        "nombre": "Delish - Café de especialidad y pastelería",
+        "rating": 5,
+        "resenas": 10,
+        "score": 4.410960518562168
+      },
+      {
+        "nombre": "Muddy's Rock Café",
+        "rating": 4.7,
+        "resenas": 20,
+        "score": 4.410467079347214
+      },
+      {
+        "nombre": "la piccola Napoli",
+        "rating": 4.5,
+        "resenas": 64,
+        "score": 4.410239549084077
+      },
+      {
+        "nombre": "Crema y Nata",
+        "rating": 4.6,
+        "resenas": 29,
+        "score": 4.409194159004866
+      },
+      {
+        "nombre": "Café Nonos coffeeshop",
+        "rating": 4.5,
+        "resenas": 59,
+        "score": 4.408520823360459
+      },
+      {
+        "nombre": "La Media Colombia",
+        "rating": 4.6,
+        "resenas": 28,
+        "score": 4.408365019011406
+      },
+      {
+        "nombre": "Café Don Senén",
+        "rating": 5,
+        "resenas": 9,
+        "score": 4.40817051509769
+      },
+      {
+        "nombre": "AMORETTO",
+        "rating": 5,
+        "resenas": 9,
+        "score": 4.40817051509769
+      },
+      {
+        "nombre": "Perros Calientes |Hamburguesas | My Doggy Gourmet",
+        "rating": 4.5,
+        "resenas": 44,
+        "score": 4.402945657694261
+      },
+      {
+        "nombre": "Kawi Café & Bar",
+        "rating": 4.6,
+        "resenas": 18,
+        "score": 4.399659284497444
+      },
+      {
+        "nombre": "Cafeteria Dios Se Lo Pague",
+        "rating": 5,
+        "resenas": 6,
+        "score": 4.399639639639639
+      },
+      {
+        "nombre": "Foodie Plaza Villavicencio",
+        "rating": 4.4,
+        "resenas": 5576,
+        "score": 4.399363980530016
+      },
+      {
+        "nombre": "DaniPez al Horno",
+        "rating": 4.5,
+        "resenas": 35,
+        "score": 4.399261992619926
+      },
+      {
+        "nombre": "Restaurante Frutos Del Mar",
+        "rating": 4.4,
+        "resenas": 1637,
+        "score": 4.398001767144702
+      },
+      {
+        "nombre": "COCO´S",
+        "rating": 4.4,
+        "resenas": 1442,
+        "score": 4.39776476849388
+      },
+      {
+        "nombre": "Antojitos & Suspiros - Reposteria Casera",
+        "rating": 4.8,
+        "resenas": 8,
+        "score": 4.3977394408090404
+      },
+      {
+        "nombre": "CHORI LLANO",
+        "rating": 4.6,
+        "resenas": 15,
+        "score": 4.396891191709844
+      },
+      {
+        "nombre": "D' Geraz Gourmet Restaurante - Bar",
+        "rating": 4.7,
+        "resenas": 10,
+        "score": 4.396817913965821
+      },
+      {
+        "nombre": "Trinche Gourmet Restaurante",
+        "rating": 5,
+        "resenas": 5,
+        "score": 4.396741098370549
+      },
+      {
+        "nombre": "Crazy Monkey Nutrition - Bebidas saludables",
+        "rating": 5,
+        "resenas": 5,
+        "score": 4.396741098370549
+      },
+      {
+        "nombre": "Tienda de cafe Caribabare",
+        "rating": 5,
+        "resenas": 5,
+        "score": 4.396741098370549
+      },
+      {
+        "nombre": "RUTA 65 CAFÉ - Primavera Urbana CC",
+        "rating": 5,
+        "resenas": 5,
+        "score": 4.396741098370549
+      },
+      {
+        "nombre": "Burgs",
+        "rating": 5,
+        "resenas": 5,
+        "score": 4.396741098370549
+      },
+      {
+        "nombre": "La Rosita etapa 3",
+        "rating": 4.5,
+        "resenas": 28,
+        "score": 4.396197718631178
+      },
+      {
+        "nombre": "Donde Malagon",
+        "rating": 4.5,
+        "resenas": 26,
+        "score": 4.395287671232876
+      },
+      {
+        "nombre": "La Playa Pizza",
+        "rating": 4.6,
+        "resenas": 13,
+        "score": 4.3950029052876225
+      },
+      {
+        "nombre": "Fierro's Burger",
+        "rating": 4.4,
+        "resenas": 508,
+        "score": 4.394824854779088
+      },
+      {
+        "nombre": "La Noisa (café brunch)",
+        "rating": 5,
+        "resenas": 4,
+        "score": 4.393814432989689
+      },
+      {
+        "nombre": "Wipiwé",
+        "rating": 5,
+        "resenas": 4,
+        "score": 4.393814432989689
+      },
+      {
+        "nombre": "Bairon's Gourmet",
+        "rating": 5,
+        "resenas": 4,
+        "score": 4.393814432989689
+      },
+      {
+        "nombre": "Pasadena Beer Club",
+        "rating": 5,
+        "resenas": 4,
+        "score": 4.393814432989689
+      },
+      {
+        "nombre": "Amburguer",
+        "rating": 5,
+        "resenas": 4,
+        "score": 4.393814432989689
+      },
+      {
+        "nombre": "La Cupkeria Gourmet",
+        "rating": 4.7,
+        "resenas": 7,
+        "score": 4.392468619246862
+      },
+      {
+        "nombre": "Café Llanerazo",
+        "rating": 4.6,
+        "resenas": 10,
+        "score": 4.3921037124337055
+      },
+      {
+        "nombre": "MrBrochetas",
+        "rating": 4.8,
+        "resenas": 5,
+        "score": 4.391913095956547
+      },
+      {
+        "nombre": "FOODIE Momentos Deliciosos",
+        "rating": 4.5,
+        "resenas": 18,
+        "score": 4.391482112436115
+      },
+      {
+        "nombre": "El Sazon Huilense",
+        "rating": 4.7,
+        "resenas": 6,
+        "score": 4.39099099099099
+      },
+      {
+        "nombre": "Paellas Albufera",
+        "rating": 5,
+        "resenas": 3,
+        "score": 4.390859232175502
+      },
+      {
+        "nombre": "Cholupa café Villavicencio",
+        "rating": 5,
+        "resenas": 3,
+        "score": 4.390859232175502
+      },
+      {
+        "nombre": "Sprezzatura Café Coworking",
+        "rating": 5,
+        "resenas": 3,
+        "score": 4.390859232175502
+      },
+      {
+        "nombre": "La Tasajera Asadero y Restaurante",
+        "rating": 5,
+        "resenas": 3,
+        "score": 4.390859232175502
+      },
+      {
+        "nombre": "CASA DEL KUMIS BARZAL",
+        "rating": 4.5,
+        "resenas": 16,
+        "score": 4.390487106017191
+      },
+      {
+        "nombre": "PAN DE ARROZ TIPICO DEL LLANO",
+        "rating": 4.4,
+        "resenas": 170,
+        "score": 4.390124286194155
+      },
+      {
+        "nombre": "Chorillano",
+        "rating": 4.4,
+        "resenas": 138,
+        "score": 4.389195148842337
+      },
+      {
+        "nombre": "Pizza Gourmet 360",
+        "rating": 4.4,
+        "resenas": 134,
+        "score": 4.389066567497211
+      },
+      {
+        "nombre": "Cup Café Artesanal",
+        "rating": 4.4,
+        "resenas": 130,
+        "score": 4.388934888972525
+      },
+      {
+        "nombre": "Tostao' Café & Pan",
+        "rating": 4.4,
+        "resenas": 124,
+        "score": 4.388731314679953
+      },
+      {
+        "nombre": "Barbacoa Gourmet",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Dukes Gourmet",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Martinoss fast food",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Budhana coffee & Lounge",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Épico Café",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Café Llanerazo Siloe",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Café Carajillo Express",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "San Jerónimo Café y Fe.",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Café Quevedo",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Cafecito Con Diaco",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Lechoneria la bendicion Gourmet - La rosita",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Los Trigos Amasijos Sanmartineros Villavicencio",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Los Caseros de Carito",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Cafe Internet Mediterraneo",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Pizzeria Los Manguitos",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "Piñas & Guarapo Lorena",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "TROPICOOL - CHELADAS, JUGOS, GRANIZADOS Y MAS!",
+        "rating": 5,
+        "resenas": 2,
+        "score": 4.3878750765462335
+      },
+      {
+        "nombre": "La Cuchara Gourmet",
+        "rating": 4.4,
+        "resenas": 100,
+        "score": 4.387836160529582
+      },
+      {
+        "nombre": "Piazza Fratelli",
+        "rating": 4.4,
+        "resenas": 75,
+        "score": 4.386738836265223
+      },
+      {
+        "nombre": "Cafetería salomé",
+        "rating": 4.7,
+        "resenas": 3,
+        "score": 4.386471663619743
+      },
+      {
+        "nombre": "Cafetería Caliche",
+        "rating": 4.7,
+        "resenas": 3,
+        "score": 4.386471663619743
+      },
+      {
+        "nombre": "Postres Malú",
+        "rating": 4.7,
+        "resenas": 3,
+        "score": 4.386471663619743
+      },
+      {
+        "nombre": "Moratta Pizzeria",
+        "rating": 4.7,
+        "resenas": 3,
+        "score": 4.386471663619743
+      },
+      {
+        "nombre": "Cafeteria Y Fruteria Angie's",
+        "rating": 4.5,
+        "resenas": 8,
+        "score": 4.386317668054728
+      },
+      {
+        "nombre": "La Gran Poderosa Burger & Cream",
+        "rating": 4.4,
+        "resenas": 54,
+        "score": 4.385651537335285
+      },
+      {
+        "nombre": "IKI Asiático Fusión",
+        "rating": 4.4,
+        "resenas": 52,
+        "score": 4.385538612887357
+      },
+      {
+        "nombre": "Arepa Al Gusto",
+        "rating": 4.4,
+        "resenas": 50,
+        "score": 4.385423896876548
+      },
+      {
+        "nombre": "4 Parques Gourmet",
+        "rating": 4.5,
+        "resenas": 6,
+        "score": 4.3852252252252235
+      },
+      {
+        "nombre": "cafe Capuchino",
+        "rating": 4.5,
+        "resenas": 6,
+        "score": 4.3852252252252235
+      },
+      {
+        "nombre": "Vásquez Gourmet",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Costra Nostra La Sanduchería Villavicencio Gourmet",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Makafe Gourmet",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "ARMA TU PIZZA - PIZZERÍA GOURMET",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Siloe Coffee",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Cafe bar black & white villavicencio",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Cafetería",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Cafetería Hacienda Café Del Llano",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Amada Mia Terraza café",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Disfruta Fresch",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Pollo Express",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "𝐒𝐔 𝐋𝐞𝐜𝐡𝐨𝐧𝐞𝐫í𝐚 𝐆𝐎𝐔𝐑𝐌𝐄𝐓 𝐌á𝐬𝐭𝐞𝐫",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Las Delicias de ZAKAMAGUÁ Parrilla Gourmet",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "El Sabor del Llano",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Dolce churro gourmet",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Hacienda GOURMET",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Café don SENÉN estacion villacentro",
+        "rating": 5,
+        "resenas": 1,
+        "score": 4.3848615384615375
+      },
+      {
+        "nombre": "Restaurante El Cabrestero",
+        "rating": 4.4,
+        "resenas": 26,
+        "score": 4.383890410958903
+      },
+      {
+        "nombre": "Galatea Café",
+        "rating": 4.5,
+        "resenas": 2,
+        "score": 4.382976117575015
+      },
+      {
+        "nombre": "Pastello",
+        "rating": 4.5,
+        "resenas": 2,
+        "score": 4.382976117575015
+      },
+      {
+        "nombre": "El Sitio Restaurante",
+        "rating": 4.5,
+        "resenas": 2,
+        "score": 4.382976117575015
+      },
+      {
+        "nombre": "Parrilla Sabor Colombiano",
+        "rating": 4.5,
+        "resenas": 2,
+        "score": 4.382976117575015
+      },
+      {
+        "nombre": "D'Luis \"Empanadas Gourmet\"",
+        "rating": 4.4,
+        "resenas": 5,
+        "score": 4.382257091128545
+      },
+      {
+        "nombre": "Restaurante Doña Chela",
+        "rating": 4.3,
+        "resenas": 4,
+        "score": 4.38023044269254
+      },
+      {
+        "nombre": "EL antojito LLANERO",
+        "rating": 4.3,
+        "resenas": 4,
+        "score": 4.38023044269254
+      },
+      {
+        "nombre": "Delicias gourmet",
+        "rating": 4,
+        "resenas": 1,
+        "score": 4.379938461538461
+      },
+      {
+        "nombre": "Leños Gourmet",
+        "rating": 4.3,
+        "resenas": 6,
+        "score": 4.379459459459458
+      },
+      {
+        "nombre": "DULCE FRUTO EXPRESS",
+        "rating": 4,
+        "resenas": 2,
+        "score": 4.378077158603796
+      },
+      {
+        "nombre": "Cafeparrillaac",
+        "rating": 4,
+        "resenas": 2,
+        "score": 4.378077158603796
+      },
+      {
+        "nombre": "El Parador Llanero Nuevo Punto",
+        "rating": 4,
+        "resenas": 2,
+        "score": 4.378077158603796
+      },
+      {
+        "nombre": "Tumarket Oriente",
+        "rating": 4,
+        "resenas": 2,
+        "score": 4.378077158603796
+      },
+      {
+        "nombre": "Sana Tentación 1 Herbalife",
+        "rating": 4.2,
+        "resenas": 5,
+        "score": 4.3774290887145435
+      },
+      {
+        "nombre": "Matilda Hamburguesas",
+        "rating": 4.3,
+        "resenas": 18,
+        "score": 4.375127768313457
+      },
+      {
+        "nombre": "Liela CAFE",
+        "rating": 3,
+        "resenas": 1,
+        "score": 4.375015384615383
+      },
+      {
+        "nombre": "Sofia’s world coffee",
+        "rating": 3,
+        "resenas": 1,
+        "score": 4.375015384615383
+      },
+      {
+        "nombre": "Frutirapidas Pipe",
+        "rating": 4.3,
+        "resenas": 20,
+        "score": 4.374451322453573
+      },
+      {
+        "nombre": "Bagatela Café - Bar",
+        "rating": 4,
+        "resenas": 4,
+        "score": 4.37440873256519
+      },
+      {
+        "nombre": "El punto del pandebono",
+        "rating": 4,
+        "resenas": 4,
+        "score": 4.37440873256519
+      },
+      {
+        "nombre": "Restaurant Le Foundue Gourmet",
+        "rating": 4,
+        "resenas": 4,
+        "score": 4.37440873256519
+      },
+      {
+        "nombre": "PARADOR LA CASETA",
+        "rating": 4,
+        "resenas": 4,
+        "score": 4.37440873256519
+      },
+      {
+        "nombre": "Piara Chicharron Gourmet",
+        "rating": 4.2,
+        "resenas": 10,
+        "score": 4.373246906305243
+      },
+      {
+        "nombre": "Café Cubarro",
+        "rating": 3.5,
+        "resenas": 2,
+        "score": 4.373178199632577
+      },
+      {
+        "nombre": "La Criollada",
+        "rating": 4.3,
+        "resenas": 28,
+        "score": 4.3718631178707215
+      },
+      {
+        "nombre": "Lechoneria Miriam Vasquez",
+        "rating": 3.7,
+        "resenas": 3,
+        "score": 4.371846435100547
+      },
+      {
+        "nombre": "AREPAS LLANO GOURMET",
+        "rating": 3.7,
+        "resenas": 3,
+        "score": 4.371846435100547
+      },
+      {
+        "nombre": "Café Aroma Quindiano",
+        "rating": 3.8,
+        "resenas": 4,
+        "score": 4.37052759248029
+      },
+      {
+        "nombre": "𝐒𝐮 𝐋𝐞𝐜𝐡𝐨𝐧𝐞𝐫𝐢́𝐚 𝐆𝐎𝐔𝐑𝐌𝐄𝐓 𝐏𝐫𝐢𝐦𝐞",
+        "rating": 4.1,
+        "resenas": 9,
+        "score": 4.369804618117228
+      },
+      {
+        "nombre": "Al Café",
+        "rating": 3,
+        "resenas": 2,
+        "score": 4.368279240661359
+      },
+      {
+        "nombre": "Cafe Llanerito",
+        "rating": 3,
+        "resenas": 2,
+        "score": 4.368279240661359
+      },
+      {
+        "nombre": "Pastelería Napolitana",
+        "rating": 4.3,
+        "resenas": 42,
+        "score": 4.3677419354838705
+      },
+      {
+        "nombre": "La comarca Restaurante y Cafeteria",
+        "rating": 4.2,
+        "resenas": 18,
+        "score": 4.366950596252129
+      },
+      {
+        "nombre": "La Pizzetta Gourmet",
+        "rating": 3.3,
+        "resenas": 3,
+        "score": 4.36599634369287
+      },
+      {
+        "nombre": "Mr.Combos Gourmet",
+        "rating": 1,
+        "resenas": 1,
+        "score": 4.365169230769229
+      },
+      {
+        "nombre": "El Punto del Sabor",
+        "rating": 4,
+        "resenas": 10,
+        "score": 4.363818503241013
+      },
+      {
+        "nombre": "FRUTOS NATURALMENTE BARZAL",
+        "rating": 4.2,
+        "resenas": 23,
+        "score": 4.3632426429761235
+      },
+      {
+        "nombre": "Bar El Acopio",
+        "rating": 3.6,
+        "resenas": 5,
+        "score": 4.362945081472541
+      },
+      {
+        "nombre": "Fábrica de Buñuelos y Churros Ñoñis",
+        "rating": 4.3,
+        "resenas": 61,
+        "score": 4.362850356294537
+      },
+      {
+        "nombre": "MURAD CAFÉ",
+        "rating": 4.2,
+        "resenas": 26,
+        "score": 4.361095890410958
+      },
+      {
+        "nombre": "Pollo Doradito El Original",
+        "rating": 4.3,
+        "resenas": 69,
+        "score": 4.360995850622406
+      },
+      {
+        "nombre": "la española express- cafetería-restaurante",
+        "rating": 3.3,
+        "resenas": 4,
+        "score": 4.36082474226804
+      },
+      {
+        "nombre": "Pescador Restaurante | Mariscos y Pescados en Villavicencio",
+        "rating": 4.2,
+        "resenas": 27,
+        "score": 4.36039279869067
+      },
+      {
+        "nombre": "Salchilocura Food Truck Park",
+        "rating": 4.3,
+        "resenas": 92,
+        "score": 4.35622609434764
+      },
+      {
+        "nombre": "Choricarnes",
+        "rating": 4.1,
+        "resenas": 22,
+        "score": 4.35415504740658
+      },
+      {
+        "nombre": "Play Donuts | Barrio Barzal",
+        "rating": 3.2,
+        "resenas": 5,
+        "score": 4.353289076644538
+      },
+      {
+        "nombre": "Lluvia De Hamburguesas",
+        "rating": 4.3,
+        "resenas": 111,
+        "score": 4.352814371257484
+      },
+      {
+        "nombre": "La Rosita II",
+        "rating": 4.1,
+        "resenas": 25,
+        "score": 4.350798018712162
+      },
+      {
+        "nombre": "Casa del Kumis",
+        "rating": 3.7,
+        "resenas": 10,
+        "score": 4.349675898644666
+      },
+      {
+        "nombre": "Perú Sazón C.C. Primavera Urbana",
+        "rating": 4.3,
+        "resenas": 152,
+        "score": 4.346699611719025
+      },
+      {
+        "nombre": "RESTAURANTE Y COMIDAS RAPIDAS EL SABOR DE ARCHI",
+        "rating": 3.9,
+        "resenas": 16,
+        "score": 4.346475644699139
+      },
+      {
+        "nombre": "Golosita Café",
+        "rating": 4.2,
+        "resenas": 50,
+        "score": 4.345761031234506
+      },
+      {
+        "nombre": "Iska Parrilla",
+        "rating": 4.3,
+        "resenas": 181,
+        "score": 4.3431647634584
+      },
+      {
+        "nombre": "ALQUIMIA GOURMET",
+        "rating": 3.9,
+        "resenas": 18,
+        "score": 4.342419080068142
+      },
+      {
+        "nombre": "LA GALLINA VIRINGA",
+        "rating": 2,
+        "resenas": 4,
+        "score": 4.33559733171619
+      },
+      {
+        "nombre": "CUP café artesanal",
+        "rating": 4.3,
+        "resenas": 276,
+        "score": 4.334588235294117
+      },
+      {
+        "nombre": "SALIMA CAFÉ - BAR",
+        "rating": 4.2,
+        "resenas": 71,
+        "score": 4.334553775743707
+      },
+      {
+        "nombre": "El Saman Del Parque",
+        "rating": 4,
+        "resenas": 30,
+        "score": 4.3324717285945065
+      },
+      {
+        "nombre": "El Llano y Sus Hayacas",
+        "rating": 4.3,
+        "resenas": 314,
+        "score": 4.332041656575441
+      },
+      {
+        "nombre": "La Cafetería",
+        "rating": 1.8,
+        "resenas": 4,
+        "score": 4.3317161916312905
+      },
+      {
+        "nombre": "Panadería y Restaurante Las Delicias",
+        "rating": 3.9,
+        "resenas": 25,
+        "score": 4.328783709411116
+      },
+      {
+        "nombre": "Villa Cafe Es MAZ Cafe",
+        "rating": 4.1,
+        "resenas": 50,
+        "score": 4.3259295984134845
+      },
+      {
+        "nombre": "Sandwich",
+        "rating": 4.2,
+        "resenas": 98,
+        "score": 4.322448979591837
+      },
+      {
+        "nombre": "Restaurante El Cabestrero",
+        "rating": 4.1,
+        "resenas": 55,
+        "score": 4.321536217792902
+      },
+      {
+        "nombre": "Café Bocore - Unicentro Villavicencio",
+        "rating": 4,
+        "resenas": 38,
+        "score": 4.321395106715252
+      },
+      {
+        "nombre": "Empanadas Qkomedia Barzal Villavicencio",
+        "rating": 3.8,
+        "resenas": 24,
+        "score": 4.320066334991707
+      },
+      {
+        "nombre": "Nanchos Parrilla Express RESTAURANTE-VILLAVICENCIO",
+        "rating": 4.3,
+        "resenas": 704,
+        "score": 4.318250793212856
+      },
+      {
+        "nombre": "Cholaos | Barzal",
+        "rating": 4.3,
+        "resenas": 745,
+        "score": 4.317460736439224
+      },
+      {
+        "nombre": "El Palacio Del Aborrajado",
+        "rating": 4.2,
+        "resenas": 118,
+        "score": 4.314798906677079
+      },
+      {
+        "nombre": "Panadería Veracruz Centro",
+        "rating": 4.3,
+        "resenas": 975,
+        "score": 4.314049060210257
+      },
+      {
+        "nombre": "Hamburguesas del Fuego",
+        "rating": 4.1,
+        "resenas": 69,
+        "score": 4.310096818810511
+      },
+      {
+        "nombre": "Biches Restaurante Bar Villacentro",
+        "rating": 3.7,
+        "resenas": 25,
+        "score": 4.3067694001100705
+      },
+      {
+        "nombre": "Frutizza",
+        "rating": 3.9,
+        "resenas": 38,
+        "score": 4.3055700156168655
+      },
+      {
+        "nombre": "Brangus The Steak Place",
+        "rating": 4.2,
+        "resenas": 150,
+        "score": 4.304366347177848
+      },
+      {
+        "nombre": "Centro Comercial | Villacentro",
+        "rating": 4.3,
+        "resenas": 5094,
+        "score": 4.3031225660270485
+      },
+      {
+        "nombre": "Cafe Dos Molinos",
+        "rating": 3.1,
+        "resenas": 14,
+        "score": 4.298785425101214
+      },
+      {
+        "nombre": "Patacón Burger",
+        "rating": 1.9,
+        "resenas": 7,
+        "score": 4.298744769874476
+      },
+      {
+        "nombre": "Corralazo VIP",
+        "rating": 4.2,
+        "resenas": 198,
+        "score": 4.291846298031865
+      },
+      {
+        "nombre": "Frutilandia",
+        "rating": 4.2,
+        "resenas": 204,
+        "score": 4.290489381348107
+      },
+      {
+        "nombre": "Asadero la gran llanera joropo y mamona",
+        "rating": 3.7,
+        "resenas": 33,
+        "score": 4.286124401913875
+      },
+      {
+        "nombre": "Juan Valdez - Unicentro Villavicencio",
+        "rating": 4,
+        "resenas": 72,
+        "score": 4.281532147742817
+      },
+      {
+        "nombre": "Nido Bistro & Lounge",
+        "rating": 4.2,
+        "resenas": 282,
+        "score": 4.275910147172734
+      },
+      {
+        "nombre": "Sabor Bistro Unicentro",
+        "rating": 2.3,
+        "resenas": 11,
+        "score": 4.274369501466275
+      },
+      {
+        "nombre": "Asadero y Restaurante Tierra Santandereana",
+        "rating": 4,
+        "resenas": 82,
+        "score": 4.271623405191376
+      },
+      {
+        "nombre": "Restaurante 1A",
+        "rating": 4.2,
+        "resenas": 373,
+        "score": 4.263899152358183
+      },
+      {
+        "nombre": "Matambre Gourmet Villavicencio",
+        "rating": 4.2,
+        "resenas": 485,
+        "score": 4.25348371839185
+      },
+      {
+        "nombre": "Restaurante Donde Rafa 24 horas clínica meta",
+        "rating": 3.9,
+        "resenas": 78,
+        "score": 4.2476572958500665
+      },
+      {
+        "nombre": "Fonda Quindiana Restaurante",
+        "rating": 4.1,
+        "resenas": 203,
+        "score": 4.24060475161987
+      },
+      {
+        "nombre": "Gourmet Casero",
+        "rating": 1,
+        "resenas": 9,
+        "score": 4.2376554174067484
+      },
+      {
+        "nombre": "CASA DEL KUMIS",
+        "rating": 4.1,
+        "resenas": 218,
+        "score": 4.235584647426361
+      },
+      {
+        "nombre": "WOK GOURMET",
+        "rating": 4,
+        "resenas": 126,
+        "score": 4.235199999999999
+      },
+      {
+        "nombre": "Raffaello Bakery",
+        "rating": 4,
+        "resenas": 131,
+        "score": 4.231669793621013
+      },
+      {
+        "nombre": "Armalo",
+        "rating": 2.4,
+        "resenas": 17,
+        "score": 4.2280661722760975
+      },
+      {
+        "nombre": "Restaurante Toy Wan",
+        "rating": 4.1,
+        "resenas": 267,
+        "score": 4.22142286171063
+      },
+      {
+        "nombre": "La Ternera de Falla",
+        "rating": 3.9,
+        "resenas": 107,
+        "score": 4.215042458552365
+      },
+      {
+        "nombre": "Arroz paisa el original Villavicencio",
+        "rating": 4.1,
+        "resenas": 318,
+        "score": 4.209516943042537
+      },
+      {
+        "nombre": "Restaurante El Cabrestero del Llano",
+        "rating": 4.2,
+        "resenas": 6093,
+        "score": 4.205837850717818
+      },
+      {
+        "nombre": "Salvajada",
+        "rating": 3.5,
+        "resenas": 57,
+        "score": 4.187843704775687
+      },
+      {
+        "nombre": "Mi Pollo Doradito",
+        "rating": 4.1,
+        "resenas": 601,
+        "score": 4.17092607003891
+      },
+      {
+        "nombre": "Rancholaos",
+        "rating": 4.1,
+        "resenas": 647,
+        "score": 4.167083762696894
+      },
+      {
+        "nombre": "BurgerPOP - Foodie Plaza",
+        "rating": 3.9,
+        "resenas": 170,
+        "score": 4.161706415854887
+      },
+      {
+        "nombre": "Las Prras & Bacon®️",
+        "rating": 4,
+        "resenas": 286,
+        "score": 4.158104993597951
+      },
+      {
+        "nombre": "Miranda Gourmet",
+        "rating": 3.8,
+        "resenas": 128,
+        "score": 4.1562287012495265
+      },
+      {
+        "nombre": "Restaurante Chop Suey Rosita",
+        "rating": 4,
+        "resenas": 354,
+        "score": 4.138772757923128
+      },
+      {
+        "nombre": "Cafeteria Unillanos - San Antonio",
+        "rating": 3.7,
+        "resenas": 120,
+        "score": 4.127823050058207
+      },
+      {
+        "nombre": "SIENA WORLD",
+        "rating": 3.1,
+        "resenas": 56,
+        "score": 4.1037288135593215
+      },
+      {
+        "nombre": "LOS BOYACOS.COM",
+        "rating": 4,
+        "resenas": 605,
+        "score": 4.095617159671674
+      },
+      {
+        "nombre": "Nanchos 24 Horas",
+        "rating": 3.9,
+        "resenas": 311,
+        "score": 4.08979293544458
+      },
+      {
+        "nombre": "Rodolfo Comidas Rapidas",
+        "rating": 3.2,
+        "resenas": 88,
+        "score": 4.02335200344679
+      },
+      {
+        "nombre": "Asadero y Restaurante La Bascula",
+        "rating": 3.7,
+        "resenas": 314,
+        "score": 3.967013804795349
+      }
+    ],
+    "sin_calificacion_para_rankear": [
+      "RESTAURANTE Y CAFETERIA BERAKHAH GOURMET SPA",
+      "Russi Reposteria Café",
+      "Wok Palace Villavicencio"
+    ]
+  },
+  "fase2_scraping": {
+    "ejecutado": true,
+    "sitios_dominio_propio_intentados": 7,
+    "omitidos_por_ser_redes_o_agregadores": 8,
+    "scraping_exitoso": 6,
+    "scraping_fallido": 1,
+    "fallos": [
+      {
+        "nombre": "Cafeteria | Centaury Coffee Maid",
+        "url": "https://cafeteriacentaurycoffeemaid.co/",
+        "motivo": "fetch failed"
+      }
+    ]
+  },
+  "guardado_bd": {
+    "inserted": 0,
+    "updated": 25,
+    "skipped_no_coords": 0,
+    "menu_inserted": 0,
+    "menu_skipped_has_items": 2
+  },
+  "restaurantes": [
+    {
+      "nombre": "KOI SUSHI | Restaurante Japonés en Villavicencio",
+      "direccion": "8 ET ED CAPORAL P1, Cl. 15 #37 G 36 LC 10, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.54 km del centroide)",
+      "tipo_cocina": "Japonesa",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 12:00–15:30, 17:30–22:00 | martes: 12:00–15:30, 17:30–22:00 | miércoles: 12:00–15:30, 17:30–22:00 | jueves: 12:00–15:30, 17:30–22:00 | viernes: 12:00–22:00 | sábado: 12:00–22:00 | domingo: 12:00–20:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 1199,
+      "ranking_score": 4.825247568917835,
+      "presencia_web_principal": "https://app.menupp.co/menu/koisushi",
+      "google_place_id": "ChIJRxfuFa4tPo4RXDARskvgREU",
+      "coordenadas": {
+        "lat": 4.1328208,
+        "lng": -73.63296559999999
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 1199 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30002
+    },
+    {
+      "nombre": "Tengoku Sushi Bar",
+      "direccion": "Cra. 43b #21 11, Buque, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.75 km del centroide)",
+      "tipo_cocina": "Japonesa",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 12:00–15:00, 17:00–21:30 | martes: 12:00–15:00, 17:00–21:30 | miércoles: 12:00–15:00, 17:00–21:30 | jueves: 12:00–15:00, 17:00–21:30 | viernes: 12:00–15:00, 17:00–21:30 | sábado: 12:00–15:00, 17:00–21:30 | domingo: 12:00–21:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 843,
+      "ranking_score": 4.79978471474704,
+      "presencia_web_principal": "https://menupp.co/tengokusushibar",
+      "google_place_id": "ChIJc_LFulstPo4RS-Y2LpX--7M",
+      "coordenadas": {
+        "lat": 4.1389916,
+        "lng": -73.6416891
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 843 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30003
+    },
+    {
+      "nombre": "NAPOLETA TRADIZIONE",
+      "direccion": "Cl. 1 #24-11 Local 1, Villavicencio, Meta",
+      "zona": "La Rosita",
+      "zona_asignada_por": "coordenadas (0.88 km del centroide)",
+      "tipo_cocina": "Pizzería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 17:00–22:00 | martes: 17:00–22:00 | miércoles: 17:00–22:00 | jueves: 17:00–22:00 | viernes: 17:00–22:30 | sábado: 17:00–22:30 | domingo: 17:00–22:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 768,
+      "ranking_score": 4.792037108620023,
+      "presencia_web_principal": "https://napoletapizzas.com/",
+      "google_place_id": "ChIJg7e1QiIvPo4R3Dk64hkpe2s",
+      "coordenadas": {
+        "lat": 4.1185425,
+        "lng": -73.61799909999999
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 768 reseñas en Google",
+      "data_source": "google_places+scraping",
+      "scraping_ok": true,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30004
+    },
+    {
+      "nombre": "Fervor Restaurante Villavicencio",
+      "direccion": "Centro comercial Primavera Urbana, Cl. 15 #40 - 01 Local 158, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.29 km del centroide)",
+      "tipo_cocina": null,
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 12:00–22:00 | martes: 12:00–22:00 | miércoles: 12:00–22:00 | jueves: 12:00–22:00 | viernes: 12:00–22:00 | sábado: 12:00–22:00 | domingo: 12:00–22:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 381,
+      "ranking_score": 4.720385852090033,
+      "presencia_web_principal": "https://grupolacomarca.com/fervor/fervor-villavicencio/",
+      "google_place_id": "ChIJYTvyU7kvPo4ReI9zuaNUAfc",
+      "coordenadas": {
+        "lat": 4.134558999999999,
+        "lng": -73.6401717
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 381 reseñas en Google",
+      "data_source": "google_places+scraping",
+      "scraping_ok": true,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30005
+    },
+    {
+      "nombre": "Restaurante La Posada del Arriero",
+      "direccion": "Grama, Cl. 41a #30-08, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "coordenadas (0.41 km del centroide)",
+      "tipo_cocina": null,
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 11:30–19:00 | martes: 11:30–19:00 | miércoles: 11:30–19:00 | jueves: 11:30–19:00 | viernes: 11:30–19:00 | sábado: 11:30–19:00 | domingo: 11:30–18:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 2198,
+      "ranking_score": 4.673204520597885,
+      "presencia_web_principal": "https://maps.google.com/?cid=12878935360224229037&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJn6SFl-4tPo4RrfZhf3kru7I",
+      "coordenadas": {
+        "lat": 4.1554474,
+        "lng": -73.6376403
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "2198 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30006
+    },
+    {
+      "nombre": "ZAO RESTAURANTE BISTRO",
+      "direccion": "barrio HACARITAMA, Cl. 4 #18-29, Villavicencio, Meta",
+      "zona": "La Rosita",
+      "zona_asignada_por": "coordenadas (1.47 km del centroide)",
+      "tipo_cocina": "Gourmet / De autor",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: Cerrado | martes: 12:00–21:30 | miércoles: 12:00–21:30 | jueves: 12:00–21:30 | viernes: 12:00–21:30 | sábado: 12:00–21:30 | domingo: 12:00–20:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.8,
+      "numero_resenas": 307,
+      "ranking_score": 4.633979867419592,
+      "presencia_web_principal": "https://www.instagram.com/p/CnhmSiPpV4T/?igshid=Zjc2ZTc4Nzk=",
+      "google_place_id": "ChIJ20HpBDEvPo4RkeJgVTzL2Cs",
+      "coordenadas": {
+        "lat": 4.1268705,
+        "lng": -73.6161658
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 307 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30007
+    },
+    {
+      "nombre": "Paz Restaurante Villavicencio",
+      "direccion": "Cl. 15 #40-01 Centro Comercial, Primavera Urbana, Local 225 - 226, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.30 km del centroide)",
+      "tipo_cocina": null,
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–22:00 | martes: 8:00–22:00 | miércoles: 8:00–22:00 | jueves: 8:00–22:00 | viernes: 8:00–22:00 | sábado: 8:00–22:00 | domingo: 8:00–22:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": true,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 756,
+      "ranking_score": 4.632876712328767,
+      "presencia_web_principal": "https://www.grupolacomarca.com/paz/paz-villavicencio/",
+      "google_place_id": "ChIJyaZeYRwvPo4RJzZdi9d9r8g",
+      "coordenadas": {
+        "lat": 4.1345539,
+        "lng": -73.6402828
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 756 reseñas en Google",
+      "data_source": "google_places+scraping",
+      "scraping_ok": true,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30008
+    },
+    {
+      "nombre": "NOVO VOO MARKET",
+      "direccion": "Villavicencio, Centro Comercial Llano Centro, Av. 40 #15-67, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "direccion",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 7:00–21:00 | martes: 7:00–21:00 | miércoles: 7:00–21:00 | jueves: 7:00–21:00 | viernes: 7:00–21:00 | sábado: 8:00–19:30 | domingo: 8:30–18:30",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 168,
+      "ranking_score": 4.617021276595745,
+      "presencia_web_principal": "https://www.instagram.com/novoomarket/",
+      "google_place_id": "ChIJpcIj5J0vPo4RUEewUipkDFA",
+      "coordenadas": {
+        "lat": 4.1347787,
+        "lng": -73.6366525
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 168 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30009
+    },
+    {
+      "nombre": "Moche Restaurante | Cocina Peruana",
+      "direccion": "Cra. 39 #35-95, Villavicencio, Meta",
+      "zona": "Barzal",
+      "zona_asignada_por": "coordenadas (0.22 km del centroide)",
+      "tipo_cocina": "Restaurante peruano",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 12:00–21:00 | martes: 12:00–21:00 | miércoles: 12:00–21:00 | jueves: 12:00–21:00 | viernes: 12:00–21:00 | sábado: 12:00–21:00 | domingo: 12:00–17:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 486,
+      "ranking_score": 4.606539509536785,
+      "presencia_web_principal": "http://moche.com.co/",
+      "google_place_id": "ChIJq21Ug6gtPo4RZJ51OfCFVO4",
+      "coordenadas": {
+        "lat": 4.1465153,
+        "lng": -73.6406654
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 486 reseñas en Google",
+      "data_source": "google_places+scraping",
+      "scraping_ok": true,
+      "scraping_error": null,
+      "menu_items_extraidos": 2,
+      "db_id": 30010
+    },
+    {
+      "nombre": "Jende Coffee",
+      "direccion": "Carrera 32#40-50, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "coordenadas (0.15 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–20:00 | martes: 8:00–20:00 | miércoles: 8:00–20:00 | jueves: 8:00–20:00 | viernes: 8:00–20:00 | sábado: 8:00–20:00 | domingo: 8:00–18:30",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 417,
+      "ranking_score": 4.596123561477892,
+      "presencia_web_principal": "https://jendecoffee.com/",
+      "google_place_id": "ChIJ93YZAYotPo4RaDv44J_kDcA",
+      "coordenadas": {
+        "lat": 4.1532113,
+        "lng": -73.6386012
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 417 reseñas en Google",
+      "data_source": "google_places+scraping",
+      "scraping_ok": true,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30011
+    },
+    {
+      "nombre": "GARI COFFEE",
+      "direccion": "Cra. 33a #39-63, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "coordenadas (0.16 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–19:00 | martes: 8:00–19:00 | miércoles: 8:00–19:00 | jueves: 8:00–19:00 | viernes: 8:00–19:00 | sábado: 8:00–19:00 | domingo: 15:00–20:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 117,
+      "ranking_score": 4.571797884841363,
+      "presencia_web_principal": "https://maps.google.com/?cid=15924799912768748697&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJW-l-PRktPo4RmbzAvyVBAN0",
+      "coordenadas": {
+        "lat": 4.151724,
+        "lng": -73.63991759999999
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "117 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30012
+    },
+    {
+      "nombre": "Cafeteria | Centaury Coffee Maid",
+      "direccion": "valles de aragon, Calle 8 sur #20 a 21, Villavicencio, Meta",
+      "zona": "La Rosita",
+      "zona_asignada_por": "coordenadas (1.23 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": null,
+      "rango_precios_simbolo": null,
+      "horarios": "lunes: Cerrado | martes: 10:00–22:00 | miércoles: 10:00–22:00 | jueves: 10:00–22:00 | viernes: 10:00–22:00 | sábado: 10:00–22:00 | domingo: 10:00–22:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 5,
+      "numero_resenas": 84,
+      "ranking_score": 4.563302752293577,
+      "presencia_web_principal": "https://cafeteriacentaurycoffeemaid.co/",
+      "google_place_id": "ChIJw5g4bwAvPo4RmYdzZIzeoPc",
+      "coordenadas": {
+        "lat": 4.115938600000001,
+        "lng": -73.6001327
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 84 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": "fetch failed",
+      "menu_items_extraidos": 0,
+      "db_id": 30015
+    },
+    {
+      "nombre": "𝐒𝐮 𝐋𝐞𝐜𝐡𝐨𝐧𝐞𝐫𝐢́𝐚 𝐆𝐎𝐔𝐑𝐌𝐄𝐓 𝐕𝐢𝐥𝐥𝐚𝐯𝐢𝐜𝐞𝐧𝐜𝐢𝐨",
+      "direccion": "Cra. 31 #10d-39, Cooperativo,, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (1.25 km del centroide)",
+      "tipo_cocina": "Llanera / Colombiana",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 6:00–16:00 | martes: Cerrado | miércoles: Cerrado | jueves: Cerrado | viernes: 6:00–16:00 | sábado: 6:00–16:00 | domingo: 6:00–16:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 267,
+      "ranking_score": 4.56290967226219,
+      "presencia_web_principal": "https://maps.google.com/?cid=13419981479255500124&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJ2U23l2wuPo4RXGVYow1aPbo",
+      "coordenadas": {
+        "lat": 4.1270451999999995,
+        "lng": -73.628495
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "267 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30014
+    },
+    {
+      "nombre": "El Penjaus Paisa",
+      "direccion": "Cra. 32 # 41 A 01, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "coordenadas (0.29 km del centroide)",
+      "tipo_cocina": "Llanera / Colombiana",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 11:30–17:00 | martes: 11:30–17:00 | miércoles: 11:30–17:00 | jueves: 11:30–17:00 | viernes: 11:30–17:00 | sábado: 11:30–17:00 | domingo: 11:30–17:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.6,
+      "numero_resenas": 953,
+      "ranking_score": 4.561822313602423,
+      "presencia_web_principal": "https://www.tripadvisor.co/UserReviewEdit-g676523-d18846112-El_Penjaus_Paisa-Villavicencio_Meta_Department.html",
+      "google_place_id": "ChIJRaCwvK4tPo4RMcR2DkGqmlo",
+      "coordenadas": {
+        "lat": 4.1543394,
+        "lng": -73.6393964
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 953 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30013
+    },
+    {
+      "nombre": "Sunroof coffee",
+      "direccion": "Cl. 20 #40-104, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.42 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–21:30 | martes: 8:00–21:30 | miércoles: 8:00–21:30 | jueves: 7:30–22:00 | viernes: 7:30–22:00 | sábado: 7:30–22:00 | domingo: Cerrado",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.6,
+      "numero_resenas": 830,
+      "ranking_score": 4.557272617173307,
+      "presencia_web_principal": "https://www.facebook.com/sunroofcoffee/",
+      "google_place_id": "ChIJ09hO0AguPo4RV7tWL6mZgMg",
+      "coordenadas": {
+        "lat": 4.1368698,
+        "lng": -73.6394188
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 830 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30016
+    },
+    {
+      "nombre": "Topics",
+      "direccion": "Cl. 15, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.29 km del centroide)",
+      "tipo_cocina": null,
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 14:30–21:30 | martes: 14:30–21:30 | miércoles: 14:30–21:30 | jueves: 14:30–21:30 | viernes: 14:30–21:30 | sábado: 14:30–21:30 | domingo: 14:30–21:30",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 236,
+      "ranking_score": 4.55320970042796,
+      "presencia_web_principal": "https://maps.google.com/?cid=7920198267786924884&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJnz_9Y8wvPo4RVJMajlwy6m0",
+      "coordenadas": {
+        "lat": 4.1335932,
+        "lng": -73.6351548
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "236 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30017
+    },
+    {
+      "nombre": "RUTA 65 CAFÉ - El Buque",
+      "direccion": "Cra. 43 #26C - 43 PISO 2, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.76 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 9:30–21:00 | martes: 9:00–21:00 | miércoles: 9:00–21:00 | jueves: 9:00–21:00 | viernes: 9:00–21:00 | sábado: 9:00–21:00 | domingo: 14:00–19:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.8,
+      "numero_resenas": 131,
+      "ranking_score": 4.546266416510319,
+      "presencia_web_principal": "https://maps.google.com/?cid=167129524341325102&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJAaPCmicvPo4RLj3YuWrDUQI",
+      "coordenadas": {
+        "lat": 4.1395785,
+        "lng": -73.6409309
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "131 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30018
+    },
+    {
+      "nombre": "Despertamos El Mundo",
+      "direccion": "Barrio Centro, Cl. 41b #31—02, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "direccion",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–21:00 | martes: 8:00–21:00 | miércoles: 8:00–21:00 | jueves: 8:00–21:00 | viernes: 8:00–22:00 | sábado: 8:00–22:00 | domingo: 9:00–19:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.6,
+      "numero_resenas": 532,
+      "ranking_score": 4.5399284862932054,
+      "presencia_web_principal": "https://maps.google.com/?cid=3204443138499278350&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJ5x4fju8tPo4RDvYvfQ54eCw",
+      "coordenadas": {
+        "lat": 4.1550205,
+        "lng": -73.639386
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "532 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30019
+    },
+    {
+      "nombre": "Fitker food and Market",
+      "direccion": "Cra. 26 #8-80, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (1.56 km del centroide)",
+      "tipo_cocina": null,
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–16:30 | martes: 8:00–16:30 | miércoles: 8:00–16:30 | jueves: 8:00–16:30 | viernes: 20:00–24:00 | sábado: 8:00–16:30 | domingo: Cerrado",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 181,
+      "ranking_score": 4.532137030995106,
+      "presencia_web_principal": "https://maps.google.com/?cid=6715826103053078898&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJ39nISlkvPo4RclHGPUJoM10",
+      "coordenadas": {
+        "lat": 4.1258789,
+        "lng": -73.6260107
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "181 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30020
+    },
+    {
+      "nombre": "Helaito",
+      "direccion": "Cl. 3c #16-04, Hacaritama, Villavicencio, Meta",
+      "zona": "La Rosita",
+      "zona_asignada_por": "coordenadas (1.42 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": "Económico",
+      "rango_precios_simbolo": "$",
+      "horarios": "lunes: 13:00–21:00 | martes: 14:00–21:00 | miércoles: 14:00–21:00 | jueves: 13:00–21:00 | viernes: 12:30–21:00 | sábado: 12:30–21:00 | domingo: 12:30–21:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.9,
+      "numero_resenas": 76,
+      "ranking_score": 4.523415730337079,
+      "presencia_web_principal": "https://helaitooficial.blogspot.com/",
+      "google_place_id": "ChIJnS4KMV0vPo4RX_1PbBphA9Y",
+      "coordenadas": {
+        "lat": 4.1269057,
+        "lng": -73.61492779999999
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 76 reseñas en Google",
+      "data_source": "google_places+scraping",
+      "scraping_ok": true,
+      "scraping_error": null,
+      "menu_items_extraidos": 5,
+      "db_id": 30021
+    },
+    {
+      "nombre": "Sr Donuts",
+      "direccion": "Cra. 38 #33b-25, Villavicencio, Meta",
+      "zona": "Barzal",
+      "zona_asignada_por": "coordenadas (0.14 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": null,
+      "rango_precios_simbolo": null,
+      "horarios": "lunes: 11:00–18:00 | martes: 11:00–18:00 | miércoles: 11:00–18:00 | jueves: 11:00–18:00 | viernes: 11:00–18:00 | sábado: 12:00–14:00 | domingo: Cerrado",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 5,
+      "numero_resenas": 57,
+      "ranking_score": 4.5178002894356,
+      "presencia_web_principal": "https://instagram.com/srdonutsvillavo?igshid=YmMyMTA2M2Y=",
+      "google_place_id": "ChIJBQeknSktPo4RhVTWob4-SpI",
+      "coordenadas": {
+        "lat": 4.1449825,
+        "lng": -73.63900919999999
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 57 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30022
+    },
+    {
+      "nombre": "Veronika",
+      "direccion": "Cl. 18 #39a-60, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.25 km del centroide)",
+      "tipo_cocina": null,
+      "rango_precios_categoria": null,
+      "rango_precios_simbolo": null,
+      "horarios": "lunes: 16:00–22:00 | martes: 16:00–22:00 | miércoles: 16:00–22:00 | jueves: 16:00–22:00 | viernes: 16:00–22:00 | sábado: 16:00–22:00 | domingo: 16:00–22:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.6,
+      "numero_resenas": 311,
+      "ranking_score": 4.514056029232643,
+      "presencia_web_principal": "https://www.instagram.com/veronika_restaurante",
+      "google_place_id": "ChIJTWQdSvMvPo4RZQPU5d3o3W4",
+      "coordenadas": {
+        "lat": 4.1355699,
+        "lng": -73.6386429
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "web/red social propia; 311 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30023
+    },
+    {
+      "nombre": "Los Trigos Gastronomía Llanera - Villavicencio",
+      "direccion": "Cra 44 # 20 - 69 Buque, Villavicencio, Meta",
+      "zona": "Villacentro",
+      "zona_asignada_por": "coordenadas (0.84 km del centroide)",
+      "tipo_cocina": "Llanera / Colombiana",
+      "rango_precios_categoria": "Medio",
+      "rango_precios_simbolo": "$$",
+      "horarios": "lunes: 8:00–19:00 | martes: 8:00–19:00 | miércoles: 8:00–19:00 | jueves: 8:00–19:00 | viernes: 8:00–19:00 | sábado: 8:00–19:00 | domingo: 8:00–19:00",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.6,
+      "numero_resenas": 307,
+      "ranking_score": 4.51338080039283,
+      "presencia_web_principal": "https://maps.google.com/?cid=13222439828389393627&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJJZaEsD8vPo4R23Qg6_eKf7c",
+      "coordenadas": {
+        "lat": 4.1387623,
+        "lng": -73.6431771
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "307 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30024
+    },
+    {
+      "nombre": "Guayoyo Coffee Lab",
+      "direccion": "500001, Cl. 33 #33-34 edificio Torre 33 Local 107, Villavicencio, Meta",
+      "zona": "Barzal",
+      "zona_asignada_por": "coordenadas (0.38 km del centroide)",
+      "tipo_cocina": "Café / Repostería",
+      "rango_precios_categoria": null,
+      "rango_precios_simbolo": null,
+      "horarios": "lunes: 7:00–18:00 | martes: 7:00–18:00 | miércoles: 7:00–18:00 | jueves: 7:00–18:00 | viernes: 7:00–18:00 | sábado: 7:00–13:00 | domingo: Cerrado",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.7,
+      "numero_resenas": 140,
+      "ranking_score": 4.512020460358055,
+      "presencia_web_principal": "https://maps.google.com/?cid=1464392981584186954&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJZy_eKwkvPo4RSo7mdqiRUhQ",
+      "coordenadas": {
+        "lat": 4.1452037,
+        "lng": -73.6354313
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "140 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30026
+    },
+    {
+      "nombre": "Rodizio Brazón Brazileiro | Experiencia rodizio y carnes en Villavicencio",
+      "direccion": "Centro Histórico de Villavicencio, Cra. 32 #41 26, Villavicencio, Meta",
+      "zona": "Centro Histórico",
+      "zona_asignada_por": "direccion",
+      "tipo_cocina": "Parrilla",
+      "rango_precios_categoria": "Gourmet",
+      "rango_precios_simbolo": "$$$",
+      "horarios": "lunes: 12:00–16:00 | martes: 12:00–15:30, 18:30–21:30 | miércoles: 12:00–15:30, 18:30–21:30 | jueves: 12:00–15:30, 18:30–21:30 | viernes: 12:00–16:00, 18:30–22:00 | sábado: 12:00–16:00, 18:30–22:00 | domingo: 12:00–17:30",
+      "servicios": {
+        "parqueadero": null,
+        "wifi": null,
+        "zona_ninos": null
+      },
+      "calificacion_google": 4.6,
+      "numero_resenas": 296,
+      "ranking_score": 4.51146800501882,
+      "presencia_web_principal": "https://maps.google.com/?cid=10627428064198251473&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "google_place_id": "ChIJ9d9T2AUuPo4R0dONkoQ1fJM",
+      "coordenadas": {
+        "lat": 4.1537688,
+        "lng": -73.6389849
+      },
+      "cumple_inclusion": true,
+      "motivo_inclusion": "296 reseñas en Google",
+      "data_source": "google_places",
+      "scraping_ok": false,
+      "scraping_error": null,
+      "menu_items_extraidos": 0,
+      "db_id": 30025
+    }
+  ],
+  "centros_comerciales": {
+    "centros_detectados": 2,
+    "restaurantes_afectados": 3,
+    "detalle": [
+      {
+        "centro_comercial": "Primavera Urbana",
+        "restaurantes": 2,
+        "parking_id": 30002,
+        "reutilizado": false,
+        "coordenadas_via": "parqueadero propio del CC (Google Places)"
+      },
+      {
+        "centro_comercial": "Llano Centro",
+        "restaurantes": 1,
+        "parking_id": 30003,
+        "reutilizado": false,
+        "coordenadas_via": "parqueadero propio del CC (Google Places)"
+      }
+    ]
+  }
+}

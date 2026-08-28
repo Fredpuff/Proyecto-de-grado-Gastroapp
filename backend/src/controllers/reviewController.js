@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { recalculateRatingAvg } = require('../utils/ratingAvg');
 
 // GET /api/restaurants/:restaurantId/reviews
 async function listByRestaurant(req, res, next) {
@@ -18,7 +19,8 @@ async function listByRestaurant(req, res, next) {
 }
 
 // POST /api/restaurants/:restaurantId/reviews (usuario autenticado)
-// Solo almacenamiento: no hay análisis de sentimiento ni cálculo automático de promedio.
+// Al guardar, recalcula rating_avg combinando esta reseña (y las demás de la
+// app) con la calificación de Google recolectada por collectRestaurantData.js.
 async function create(req, res, next) {
   try {
     const { rating, comment = null } = req.body;
@@ -37,6 +39,8 @@ async function create(req, res, next) {
       'INSERT INTO reviews (restaurant_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',
       [restaurantId, req.user.id, rating, comment]
     );
+
+    await recalculateRatingAvg(pool, restaurantId);
 
     const [rows] = await pool.query(
       `SELECT rv.id, rv.rating, rv.comment, rv.created_at, u.id AS user_id, u.name AS user_name

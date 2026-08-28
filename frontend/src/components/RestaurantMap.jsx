@@ -5,7 +5,8 @@ import 'leaflet/dist/leaflet.css';
 const PARKING_LABELS = {
   propio: 'Propio',
   convenio: 'Convenio',
-  publico: 'Público'
+  publico: 'Público',
+  centro_comercial: 'Centro comercial'
 };
 
 function pinIcon(emoji, bg) {

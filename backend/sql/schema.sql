@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS restaurants (
   parking_type ENUM('propio', 'convenio', 'publico', 'no_disponible') NOT NULL DEFAULT 'no_disponible',
   kids_zone BOOLEAN NOT NULL DEFAULT FALSE,
   rating_avg DECIMAL(2,1) NOT NULL DEFAULT 0.0, -- cargado manualmente por ahora (no calculado por IA)
-  image_url VARCHAR(255) NULL, -- si es NULL, el frontend usa un placeholder
+  image_url TEXT NULL, -- si es NULL, el frontend usa un placeholder (las URLs de fotos de Google Places superan 255 caracteres)
   lat DECIMAL(10, 7) NOT NULL,
   lng DECIMAL(10, 7) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS menu_items (
 CREATE TABLE IF NOT EXISTS parkings (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(160) NOT NULL,
-  type ENUM('propio', 'convenio', 'publico') NOT NULL,
+  type ENUM('propio', 'convenio', 'publico', 'centro_comercial') NOT NULL, -- centro_comercial: parqueadero compartido de un CC, asociado a varios restaurantes
   lat DECIMAL(10, 7) NOT NULL,
   lng DECIMAL(10, 7) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

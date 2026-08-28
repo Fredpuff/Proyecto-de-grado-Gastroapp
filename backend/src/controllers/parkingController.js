@@ -31,8 +31,8 @@ async function create(req, res, next) {
     if (!name || !type || lat === undefined || lng === undefined) {
       return res.status(400).json({ message: 'name, type, lat y lng son obligatorios' });
     }
-    if (!['propio', 'convenio', 'publico'].includes(type)) {
-      return res.status(400).json({ message: 'type debe ser propio, convenio o publico' });
+    if (!['propio', 'convenio', 'publico', 'centro_comercial'].includes(type)) {
+      return res.status(400).json({ message: 'type debe ser propio, convenio, publico o centro_comercial' });
     }
 
     const [result] = await pool.query(
