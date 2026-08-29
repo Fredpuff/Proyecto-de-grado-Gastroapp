@@ -30,7 +30,9 @@ Reglas estrictas que debes seguir siempre:
 
 const ACCENTS = { á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u', ñ: 'n', ü: 'u' };
 
+// Blindado contra null/undefined (mensajes vacíos, cuisine_type NULL en BD, etc.)
 function normalize(str) {
+  if (!str) return '';
   return str
     .toLowerCase()
     .replace(/[áéíóúñü]/g, (ch) => ACCENTS[ch]);
@@ -44,6 +46,7 @@ async function extractCriteria(message) {
   const criteria = { neighborhood: null, priceIn: null, cuisine: null, parking: false, wifi: false };
 
   for (const n of NEIGHBORHOODS) {
+    if (!n) continue;
     if (normalized.includes(normalize(n))) {
       criteria.neighborhood = n;
       break;
@@ -61,6 +64,8 @@ async function extractCriteria(message) {
 
   const [cuisineRows] = await pool.query('SELECT DISTINCT cuisine_type FROM restaurants');
   for (const row of cuisineRows) {
+    // Evita que cuisine_type NULL "matchee" cualquier mensaje (normalize(null) => '')
+    if (!row.cuisine_type) continue;
     if (normalized.includes(normalize(row.cuisine_type))) {
       criteria.cuisine = row.cuisine_type;
       break;
