@@ -71,9 +71,9 @@ export default function RestaurantDetailPage() {
         </div>
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 14 }}>
-          {!!restaurant.has_wifi && <span className="badge badge-outline"> Wifi</span>}
+          {!!restaurant.has_wifi && <span className="badge badge-outline">📶 Wifi</span>}
           <ParkingBadge type={restaurant.parking_type} />
-          {!!restaurant.kids_zone && <span className="badge badge-outline"> Zona de niños</span>}
+          {!!restaurant.kids_zone && <span className="badge badge-outline">🧒 Zona de niños</span>}
         </div>
       </div>
 
