@@ -369,10 +369,11 @@ dos líneas junto al mensaje de arranque:
 - ⚠️ `Login con Google: GOOGLE_CLIENT_ID NO configurado. El endpoint /api/auth/google responderá 503 hasta que lo agregues en backend/.env.`
 
 Levanta el frontend (`cd frontend` → `npm run dev`) y entra a
-`http://localhost:5173/login`. Si `VITE_GOOGLE_CLIENT_ID` está configurado
-vas a ver, debajo del formulario normal, una línea con "o" y el botón
-**"Continuar con Google"**. Si la variable está vacía, el botón simplemente
-no aparece (el login tradicional sigue funcionando igual).
+`http://localhost:5173/login` (o a `/registro`, tiene el mismo botón). Si
+`VITE_GOOGLE_CLIENT_ID` está configurado vas a ver, debajo del formulario
+normal, una línea con "o" y el botón **"Continuar con Google"**. Si la
+variable está vacía, el botón simplemente no aparece en ninguna de las dos
+páginas (el login/registro tradicional sigue funcionando igual).
 
 Haz clic en el botón, elige tu cuenta de Google, y deberías quedar
 logueado igual que con email/password (mismo token, mismo `AuthContext`,
@@ -386,7 +387,7 @@ mismo saludo automático del chat).
   (HTTP 503). Agrega `GOOGLE_CLIENT_ID` a `backend/.env` y reinicia el
   backend.
 - **Frontend sin `VITE_GOOGLE_CLIENT_ID`**: el botón de Google no aparece en
-  `/login`. No rompe nada, solo no se ofrece esa opción.
+  `/login` ni en `/registro`. No rompe nada, solo no se ofrece esa opción.
 - **Client ID distinto entre backend y frontend**: el backend rechaza el
   token con *"Token de Google inválido o expirado"* (HTTP 401), porque la
   verificación exige que el token haya sido emitido para el mismo Client ID

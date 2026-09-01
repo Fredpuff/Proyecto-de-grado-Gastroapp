@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import GoogleAuthButton from '../components/GoogleAuthButton';
 
 export default function LoginPage() {
-  const { login, loginWithGoogle } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,16 +29,6 @@ export default function LoginPage() {
       setError(err.message);
     } finally {
       setSubmitting(false);
-    }
-  }
-
-  async function handleGoogleSuccess(credentialResponse) {
-    setError('');
-    try {
-      const user = await loginWithGoogle(credentialResponse.credential);
-      goAfterLogin(user);
-    } catch (err) {
-      setError(err.message);
     }
   }
 
@@ -70,25 +60,7 @@ export default function LoginPage() {
           {submitting ? 'Ingresando...' : 'Ingresar'}
         </button>
 
-        {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
-          <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '18px 0' }}>
-              <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border, #ddd)' }} />
-              <span className="muted" style={{ fontSize: 13 }}>o</span>
-              <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border, #ddd)' }} />
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => setError('No se pudo iniciar sesión con Google. Intenta de nuevo.')}
-                text="continue_with"
-                locale="es"
-                width="320"
-              />
-            </div>
-          </>
-        )}
+        <GoogleAuthButton onSuccess={goAfterLogin} onError={setError} />
       </form>
 
       <p className="muted" style={{ marginTop: 16, fontSize: 14 }}>

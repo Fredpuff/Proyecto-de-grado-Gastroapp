@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import GoogleAuthButton from '../components/GoogleAuthButton';
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -14,13 +15,17 @@ export default function RegisterPage() {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  function goAfterAuth(user) {
+    navigate(user.role === 'admin' ? '/admin' : '/', { replace: true });
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setSubmitting(true);
     try {
       const user = await register(form.name, form.email, form.password, form.role);
-      navigate(user.role === 'admin' ? '/admin' : '/', { replace: true });
+      goAfterAuth(user);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -75,6 +80,8 @@ export default function RegisterPage() {
         <button className="btn btn-primary" type="submit" disabled={submitting} style={{ width: '100%' }}>
           {submitting ? 'Creando cuenta...' : 'Crear cuenta'}
         </button>
+
+        <GoogleAuthButton onSuccess={goAfterAuth} onError={setError} />
       </form>
 
       <p className="muted" style={{ marginTop: 16, fontSize: 14 }}>
