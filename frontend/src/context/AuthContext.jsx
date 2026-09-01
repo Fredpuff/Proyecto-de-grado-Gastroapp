@@ -57,6 +57,12 @@ export function AuthProvider({ children }) {
     return data.user;
   }
 
+  async function loginWithGoogle(credential) {
+    const data = await authApi.google(credential);
+    persistSession(data);
+    return data.user;
+  }
+
   function logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
@@ -64,7 +70,7 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  const value = { user, loading, login, register, logout, isAdmin: user?.role === 'admin' };
+  const value = { user, loading, login, register, loginWithGoogle, logout, isAdmin: user?.role === 'admin' };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

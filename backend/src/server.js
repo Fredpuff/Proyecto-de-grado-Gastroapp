@@ -13,4 +13,13 @@ app.listen(PORT, () => {
       'El endpoint /api/chat/recommend funcionará en modo degradado (sin IA) hasta que la agregues en backend/.env.'
     );
   }
+
+  if (process.env.GOOGLE_CLIENT_ID) {
+    console.log('Login con Google: GOOGLE_CLIENT_ID detectado, listo para usarse.');
+  } else {
+    console.warn(
+      'Login con Google: GOOGLE_CLIENT_ID NO configurado. ' +
+      'El endpoint /api/auth/google responderá 503 hasta que lo agregues en backend/.env.'
+    );
+  }
 });

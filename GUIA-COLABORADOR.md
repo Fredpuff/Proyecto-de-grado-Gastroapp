@@ -324,3 +324,80 @@ públicas en el repositorio.
 Cualquier duda sobre por qué algo se decidió así (por ejemplo, por qué
 `rating_avg` se carga a mano y no se calcula), está explicado en los
 comentarios de scope del `README.md` raíz.
+
+## 11. Configurar el login con Google (paso a paso, para principiantes)
+
+Además del login tradicional (email/password), el proyecto permite entrar
+con una cuenta de Google. A diferencia de la API key de Anthropic, aquí
+necesitas **dos** valores, y van en **dos archivos distintos** (uno por
+backend, otro por frontend).
+
+### 11.1. Consigue tu Client ID (y opcionalmente el Client Secret)
+
+Entra a https://console.cloud.google.com/apis/credentials, crea un proyecto
+si no tienes uno, y ve a **Crear credenciales → ID de cliente de OAuth →
+Aplicación web**. En "Orígenes de JavaScript autorizados" agrega
+`http://localhost:5173` (el frontend en desarrollo). Google te va a mostrar
+un **Client ID** (termina en `.apps.googleusercontent.com`) y un **Client
+Secret**. Cópialos.
+
+> El flujo que usa este proyecto (botón/One Tap de Google) solo necesita el
+> Client ID para funcionar — el backend verifica la firma del token
+> directamente contra los servidores de Google. El Client Secret queda
+> reservado para un flujo futuro (autorización con permisos adicionales) y
+> **nunca debe ir en el frontend**.
+
+### 11.2. En qué archivo y en qué carpeta va cada uno
+
+| Variable | Archivo | Valor |
+|---|---|---|
+| `GOOGLE_CLIENT_ID` | `backend/.env` | el Client ID |
+| `GOOGLE_CLIENT_SECRET` | `backend/.env` | el Client Secret (opcional hoy, déjalo listo) |
+| `VITE_GOOGLE_CLIENT_ID` | `frontend/.env` | el **mismo** Client ID de arriba |
+
+Los tres ya están como líneas vacías en los `.env.example` correspondientes
+(`backend/.env.example` y `frontend/.env.example`); solo pega el valor
+después del `=`, sin espacios ni comillas, igual que hiciste con
+`ANTHROPIC_API_KEY`.
+
+### 11.3. Cómo confirmar que está funcionando
+
+Levanta el backend (`cd backend` → `npm run dev`). Vas a ver una de estas
+dos líneas junto al mensaje de arranque:
+
+- ✅ `Login con Google: GOOGLE_CLIENT_ID detectado, listo para usarse.`
+- ⚠️ `Login con Google: GOOGLE_CLIENT_ID NO configurado. El endpoint /api/auth/google responderá 503 hasta que lo agregues en backend/.env.`
+
+Levanta el frontend (`cd frontend` → `npm run dev`) y entra a
+`http://localhost:5173/login`. Si `VITE_GOOGLE_CLIENT_ID` está configurado
+vas a ver, debajo del formulario normal, una línea con "o" y el botón
+**"Continuar con Google"**. Si la variable está vacía, el botón simplemente
+no aparece (el login tradicional sigue funcionando igual).
+
+Haz clic en el botón, elige tu cuenta de Google, y deberías quedar
+logueado igual que con email/password (mismo token, mismo `AuthContext`,
+mismo saludo automático del chat).
+
+### 11.4. Qué vas a ver si algo está mal
+
+- **Backend sin `GOOGLE_CLIENT_ID`**: el botón de Google del frontend puede
+  aparecer si pusiste `VITE_GOOGLE_CLIENT_ID`, pero al hacer clic vas a
+  recibir el error *"Login con Google no configurado en el servidor"*
+  (HTTP 503). Agrega `GOOGLE_CLIENT_ID` a `backend/.env` y reinicia el
+  backend.
+- **Frontend sin `VITE_GOOGLE_CLIENT_ID`**: el botón de Google no aparece en
+  `/login`. No rompe nada, solo no se ofrece esa opción.
+- **Client ID distinto entre backend y frontend**: el backend rechaza el
+  token con *"Token de Google inválido o expirado"* (HTTP 401), porque la
+  verificación exige que el token haya sido emitido para el mismo Client ID
+  que espera el backend. Revisa que `GOOGLE_CLIENT_ID` y
+  `VITE_GOOGLE_CLIENT_ID` sean idénticos.
+- **Usuario cancela el popup de Google o Google falla**: se muestra un
+  mensaje de error normal en la página de login (*"No se pudo iniciar sesión
+  con Google..."*), sin romper la app.
+- **Alguien con cuenta tradicional (email/password) intenta entrar por
+  Google con el mismo email**: no se crea una cuenta duplicada, se vincula
+  la cuenta existente (puede seguir usando ambos métodos). Al revés —alguien
+  creado por Google intenta usar el formulario tradicional con password—
+  recibe *"Esta cuenta se creó con Google. Usa el botón 'Continuar con
+  Google' para ingresar."*, porque esas cuentas no tienen password guardado.

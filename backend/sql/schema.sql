@@ -11,7 +11,10 @@ CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(120) NOT NULL,
   email VARCHAR(160) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NULL, -- NULL para cuentas creadas solo por Google
+  google_id VARCHAR(255) NULL UNIQUE,
+  avatar_url VARCHAR(500) NULL,
+  auth_provider ENUM('local', 'google', 'ambos') NOT NULL DEFAULT 'local',
   role ENUM('cliente', 'admin') NOT NULL DEFAULT 'cliente',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
