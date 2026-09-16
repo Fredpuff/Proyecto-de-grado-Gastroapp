@@ -63,6 +63,11 @@ body {
   display: flex;
   flex-direction: column;
 }
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 h1,
 h2,
@@ -890,6 +895,10 @@ img {
 
 /* --- Tema oscuro reutilizable (home + detalle de restaurante) --- */
 .dark-theme {
+  /* main{flex:1} le da una altura definida; sin esto, en páginas cortas
+     (login, registro, error) el contenido no llega al fondo y se ve el
+     fondo claro del body por debajo. */
+  min-height: 100vh;
   background: #1c0f1a;
   color: var(--dark-text);
   --dark-surface: #2a1824;
