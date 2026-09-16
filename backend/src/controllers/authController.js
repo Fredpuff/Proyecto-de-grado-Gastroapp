@@ -7,13 +7,13 @@ const googleClient = process.env.GOOGLE_CLIENT_ID ? new OAuth2Client(process.env
 
 async function register(req, res, next) {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'name, email y password son obligatorios' });
     }
 
-    const finalRole = role === 'admin' ? 'admin' : 'cliente';
+    const finalRole = 'cliente';
 
     const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
