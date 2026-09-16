@@ -32,38 +32,35 @@ export default function HomePage() {
 
   return (
     <div>
-      <section
-        style={{
-          background: 'linear-gradient(135deg, var(--color-primary-light), var(--color-olive-light))',
-          padding: '56px 0 40px'
-        }}
-      >
-        <div className="container">
-          <h1 style={{ fontSize: 36, maxWidth: 640 }}>Descubre los mejores sabores de Villavicencio</h1>
-          <p className="muted" style={{ maxWidth: 560, fontSize: 16 }}>
+      <section className="home-hero">
+        <span className="home-hero-blob home-hero-blob-1" aria-hidden="true" />
+        <span className="home-hero-blob home-hero-blob-2" aria-hidden="true" />
+        <div className="container home-hero-content">
+          <h1 className="home-hero-title">Descubre los mejores sabores de Villavicencio</h1>
+          <p className="muted home-hero-subtitle">
             Restaurantes gourmet en Centro Histórico, Barzal, La Rosita y Villacentro — con menú digital,
             parqueaderos cercanos y reseñas reales.
           </p>
         </div>
       </section>
 
-      <div className="container" style={{ marginTop: -30, paddingBottom: 60 }}>
+      <div className="container home-content">
         <SearchFilters filters={filters} cuisines={cuisines} onChange={setFilters} onReset={() => setFilters({})} />
 
-        <div style={{ marginTop: 28 }}>
-          {loading && <p className="muted">Buscando restaurantes...</p>}
-          {error && <div className="alert alert-error">{error}</div>}
+        <div className="home-results">
+          {loading && <p className="muted fade-in">Buscando restaurantes...</p>}
+          {error && <div className="alert alert-error fade-in">{error}</div>}
 
           {!loading && !error && restaurants.length === 0 && (
-            <div className="empty-state">
+            <div className="empty-state fade-in">
               <h3>No encontramos restaurantes con esos filtros</h3>
               <p>Intenta ajustar la búsqueda o limpiar los filtros.</p>
             </div>
           )}
 
           {!loading && restaurants.length > 0 && (
-            <>
-              <p className="muted" style={{ marginBottom: 16 }}>
+            <div className="fade-in">
+              <p className="muted home-results-count">
                 {restaurants.length} restaurante{restaurants.length !== 1 ? 's' : ''} encontrado
                 {restaurants.length !== 1 ? 's' : ''}
               </p>
@@ -72,7 +69,7 @@ export default function HomePage() {
                   <RestaurantCard key={r.id} restaurant={r} />
                 ))}
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>

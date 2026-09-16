@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+import { Wifi } from 'lucide-react';
 import StarRating from './StarRating';
 import ParkingBadge from './ParkingBadge';
+import PriceIndicator from './PriceIndicator';
 
 function initials(name) {
   return name
@@ -16,11 +18,7 @@ export default function RestaurantCard({ restaurant }) {
     restaurant;
 
   return (
-    <Link
-      to={`/restaurantes/${id}`}
-      className="card"
-      style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', color: 'inherit' }}
-    >
+    <Link to={`/restaurantes/${id}`} className="card restaurant-card-link">
       <div className="restaurant-card-media">
         {image_url ? (
           <img src={image_url} alt={name} loading="lazy" />
@@ -32,7 +30,7 @@ export default function RestaurantCard({ restaurant }) {
       <div className="restaurant-card-body">
         <div className="restaurant-card-title-row">
           <h3>{name}</h3>
-          <span className="price">{price_range}</span>
+          <PriceIndicator priceRange={price_range} />
         </div>
 
         <p className="muted restaurant-card-meta">
@@ -42,7 +40,12 @@ export default function RestaurantCard({ restaurant }) {
         <div className="restaurant-card-footer">
           <StarRating value={Number(rating_avg)} />
           <div className="restaurant-card-badges">
-            {!!has_wifi && <span className="badge badge-outline">📶 Wifi</span>}
+            {!!has_wifi && (
+              <span className="badge">
+                <Wifi size={13} strokeWidth={2.2} aria-hidden="true" />
+                Wifi
+              </span>
+            )}
             <ParkingBadge type={parking_type} />
           </div>
         </div>

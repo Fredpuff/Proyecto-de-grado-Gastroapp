@@ -4,7 +4,7 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export default function ReviewList({ reviews }) {
+export default function ReviewList({ reviews, newReviewId }) {
   if (reviews.length === 0) {
     return <p className="muted">Todavía no hay reseñas. ¡Sé el primero en opinar!</p>;
   }
@@ -12,7 +12,11 @@ export default function ReviewList({ reviews }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       {reviews.map((r) => (
-        <div key={r.id} className="card" style={{ padding: 14 }}>
+        <div
+          key={r.id}
+          className={r.id === newReviewId ? 'card review-item-enter' : 'card'}
+          style={{ padding: 14 }}
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <strong>{r.user_name}</strong>
             <span className="muted" style={{ fontSize: 12.5 }}>

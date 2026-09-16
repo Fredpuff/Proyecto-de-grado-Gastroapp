@@ -3,7 +3,7 @@
   --color-surface: #ffffff;
   --color-surface-alt: #fff9f0;
   --color-text: #362a22;
-  --color-text-muted: #8a7a6b;
+  --color-text-muted: #6f5f4f;
   --color-border: #e8dcc8;
 
   --color-primary: #c1552b;
@@ -208,6 +208,30 @@ img {
   min-width: 0;
 }
 
+.restaurant-card-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  color: inherit;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 160ms ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .restaurant-card-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+  }
+}
+.restaurant-card-link:active {
+  transform: translateY(0) scale(0.98);
+}
+@media (prefers-reduced-motion: reduce) {
+  .restaurant-card-link {
+    transition: none;
+  }
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -274,22 +298,38 @@ img {
 .restaurant-card-title-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
   min-width: 0;
 }
 .restaurant-card-title-row h3 {
   font-size: 17px;
+  font-weight: 700;
   margin: 0 0 4px;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.restaurant-card-title-row .price {
+.restaurant-card-title-row .price-indicator {
   flex-shrink: 0;
-  font-weight: 700;
-  color: var(--color-primary-dark);
+}
+
+/* --- Indicador de precio (4 niveles) --- */
+.price-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  vertical-align: middle;
+}
+.price-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+.price-dot-filled {
+  background: var(--color-accent);
 }
 
 .restaurant-card-meta {
@@ -351,6 +391,79 @@ img {
   color: var(--color-text-muted);
 }
 
+/* --- Entrada de una reseña recién publicada --- */
+.review-item-enter {
+  animation: review-item-enter 250ms ease-out;
+}
+@keyframes review-item-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-item-enter {
+    animation: none;
+  }
+}
+
+/* --- Fade-in genérico para transiciones entre estados (carga/vacío/resultados) --- */
+.fade-in {
+  animation: fade-in 180ms ease-out;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    animation: none;
+  }
+}
+
+/* --- Skeleton loaders --- */
+.skeleton-line,
+.skeleton-block {
+  background: linear-gradient(
+    100deg,
+    var(--color-border) 30%,
+    var(--color-surface-alt) 50%,
+    var(--color-border) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+.skeleton-line {
+  height: 14px;
+}
+.skeleton-block {
+  border-radius: var(--radius-md);
+}
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-line,
+  .skeleton-block {
+    animation: none;
+    background: var(--color-border);
+  }
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -366,6 +479,322 @@ img {
   .container {
     padding: 0 16px;
   }
+}
+
+/* --- Navbar --- */
+.navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.navbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+}
+.navbar-logo-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+.navbar-logo-text {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 19px;
+}
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navbar-greeting {
+  font-size: 14px;
+}
+
+/* En móvil, "Mi panel" y el saludo se ocultan y quedan detrás del toggle;
+   en escritorio se ven inline como siempre. */
+.navbar-mobile-menu {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .navbar-desktop-only {
+    display: none;
+  }
+  .navbar-mobile-menu {
+    display: block;
+    position: relative;
+  }
+  /* Un poco más de aire táctil en los botones que sí quedan visibles en móvil
+     (Salir / Ingresar / Crear cuenta), sin tocar el .btn-sm global usado en
+     login, registro y admin. */
+  .navbar-actions .btn-sm {
+    padding: 10px 14px;
+    min-height: 44px;
+  }
+}
+
+.navbar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 18px;
+  line-height: 1;
+  transition: background 120ms ease-out, border-color 120ms ease-out;
+}
+.navbar-toggle:active {
+  background: var(--color-surface-alt);
+}
+@media (hover: hover) and (pointer: fine) {
+  .navbar-toggle:hover {
+    border-color: var(--color-primary);
+  }
+}
+
+.navbar-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 10px;
+  transform-origin: top right;
+  animation: navbar-dropdown-in 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.navbar-dropdown-greeting {
+  padding: 8px 10px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+.navbar-dropdown-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 14px;
+}
+.navbar-dropdown-link:hover {
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .navbar-dropdown-link:hover {
+    background: var(--color-surface-alt);
+  }
+}
+@keyframes navbar-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navbar-dropdown {
+    animation: none;
+  }
+  .navbar-toggle {
+    transition: none;
+  }
+}
+
+/* --- Home / hero --- */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-olive-light));
+  padding: 56px 0 40px;
+}
+.home-hero-content {
+  position: relative;
+  z-index: 1;
+}
+.home-hero-title {
+  font-size: 36px;
+  max-width: 640px;
+}
+.home-hero-subtitle {
+  max-width: 560px;
+  font-size: 16px;
+}
+
+/* Fondo tipo "mesh gradient": dos formas desenfocadas moviéndose muy lento
+   detrás del texto del hero. Sutil a propósito, nunca compite con el
+   contenido ni se extiende fuera de la sección. */
+.home-hero-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+.home-hero-blob-1 {
+  width: 300px;
+  height: 300px;
+  top: -110px;
+  left: -70px;
+  background: var(--color-primary);
+  animation: home-hero-blob-float-1 24s ease-in-out infinite alternate;
+}
+.home-hero-blob-2 {
+  width: 260px;
+  height: 260px;
+  bottom: -100px;
+  right: -60px;
+  background: var(--color-olive);
+  animation: home-hero-blob-float-2 28s ease-in-out infinite alternate;
+}
+@keyframes home-hero-blob-float-1 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(40px, 30px) scale(1.1);
+  }
+}
+@keyframes home-hero-blob-float-2 {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-30px, -25px) scale(1.05);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-blob {
+    animation: none;
+  }
+}
+.home-content {
+  margin-top: -30px;
+  padding-bottom: 60px;
+}
+.home-results {
+  margin-top: 28px;
+}
+.home-results-count {
+  margin-bottom: 16px;
+}
+
+/* --- Detalle de restaurante --- */
+.detail-page {
+  padding: 32px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.detail-back-link {
+  font-size: 14px;
+}
+.detail-header-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.detail-title {
+  margin-bottom: 6px;
+}
+.detail-meta {
+  margin: 0;
+}
+.detail-badges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.detail-main-col {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+.detail-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.menu-category {
+  margin-bottom: 20px;
+}
+.menu-category-title {
+  color: var(--color-olive-dark);
+}
+.menu-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu-item-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 8px;
+}
+.menu-item-desc {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+}
+.menu-item-price {
+  white-space: nowrap;
+}
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.info-card {
+  padding: 16px;
+}
+.info-row {
+  margin: 0 0 8px;
+}
+.info-card p:last-child {
+  margin-bottom: 0;
+}
+.location-block h4 {
+  margin-bottom: 8px;
+}
+.parking-note {
+  font-size: 13.5px;
+  margin-top: 8px;
 }
 
 /* --- Chat de recomendaciones con IA --- */
