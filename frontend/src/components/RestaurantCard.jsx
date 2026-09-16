@@ -25,13 +25,13 @@ export default function RestaurantCard({ restaurant }) {
         ) : (
           <span className="restaurant-card-initials">{initials(name)}</span>
         )}
+        <span className="restaurant-card-price-chip">
+          <PriceIndicator priceRange={price_range} />
+        </span>
       </div>
 
       <div className="restaurant-card-body">
-        <div className="restaurant-card-title-row">
-          <h3>{name}</h3>
-          <PriceIndicator priceRange={price_range} />
-        </div>
+        <h3 className="restaurant-card-title">{name}</h3>
 
         <p className="muted restaurant-card-meta">
           {cuisine_type} · {neighborhood}

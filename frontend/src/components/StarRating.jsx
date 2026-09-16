@@ -9,7 +9,7 @@ export default function StarRating({ value = 0, size = 16, showValue = true }) {
           const filled = s <= rounded;
           const half = !filled && s - 0.5 === rounded;
           return (
-            <span key={s} style={{ color: filled || half ? 'var(--color-accent)' : '#dcd2c0' }}>
+            <span key={s} style={{ color: filled || half ? 'var(--color-accent)' : 'var(--star-empty-color, #dcd2c0)' }}>
               {half ? '★' : filled ? '★' : '☆'}
             </span>
           );

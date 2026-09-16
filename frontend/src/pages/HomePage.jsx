@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import SearchFilters from '../components/SearchFilters';
 import RestaurantCard from '../components/RestaurantCard';
+import AnimatedHero from '../components/AnimatedHero';
 import { restaurantsApi } from '../api/resources';
 
 export default function HomePage() {
@@ -31,18 +32,16 @@ export default function HomePage() {
   }, [restaurants]);
 
   return (
-    <div>
-      <section className="home-hero">
-        <span className="home-hero-blob home-hero-blob-1" aria-hidden="true" />
-        <span className="home-hero-blob home-hero-blob-2" aria-hidden="true" />
-        <div className="container home-hero-content">
-          <h1 className="home-hero-title">Descubre los mejores sabores de Villavicencio</h1>
-          <p className="muted home-hero-subtitle">
-            Restaurantes gourmet en Centro Histórico, Barzal, La Rosita y Villacentro — con menú digital,
-            parqueaderos cercanos y reseñas reales.
-          </p>
-        </div>
-      </section>
+    <div className="dark-theme">
+      <AnimatedHero
+        eyebrow="Gastro Villavicencio"
+        title={
+          <>
+            Descubre <span className="hero-gradient-text">los mejores sabores</span> de Villavicencio
+          </>
+        }
+        subtitle="Restaurantes gourmet en Centro Histórico, Barzal, La Rosita y Villacentro — con menú digital, parqueaderos cercanos y reseñas reales."
+      />
 
       <div className="container home-content">
         <SearchFilters filters={filters} cuisines={cuisines} onChange={setFilters} onReset={() => setFilters({})} />

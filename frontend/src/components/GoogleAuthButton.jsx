@@ -21,9 +21,9 @@ export default function GoogleAuthButton({ onSuccess, onError }) {
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '18px 0' }}>
-        <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border, #ddd)' }} />
+        <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--dark-border, #ddd)' }} />
         <span className="muted" style={{ fontSize: 13 }}>o</span>
-        <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border, #ddd)' }} />
+        <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--dark-border, #ddd)' }} />
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>

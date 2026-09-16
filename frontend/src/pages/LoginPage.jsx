@@ -33,39 +33,41 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 420, padding: '60px 20px' }}>
-      <h1>Ingresar</h1>
-      <p className="muted">Accede a tu cuenta de GSI.</p>
+    <div className="dark-theme">
+      <div className="container" style={{ maxWidth: 420, padding: '60px 20px' }}>
+        <h1>Ingresar</h1>
+        <p className="muted">Accede a tu cuenta de GSI.</p>
 
-      <form onSubmit={handleSubmit} className="card" style={{ padding: 22, marginTop: 20 }}>
-        {error && <div className="alert alert-error">{error}</div>}
+        <form onSubmit={handleSubmit} className="card" style={{ padding: 22, marginTop: 20 }}>
+          {error && <div className="alert alert-error">{error}</div>}
 
-        <div className="field">
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
+          <div className="field">
+            <label htmlFor="email">Email</label>
+            <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
 
-        <div className="field">
-          <label htmlFor="password">Contraseña</label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+          <div className="field">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        <button className="btn btn-primary" type="submit" disabled={submitting} style={{ width: '100%' }}>
-          {submitting ? 'Ingresando...' : 'Ingresar'}
-        </button>
+          <button className="btn btn-primary" type="submit" disabled={submitting} style={{ width: '100%' }}>
+            {submitting ? 'Ingresando...' : 'Ingresar'}
+          </button>
 
-        <GoogleAuthButton onSuccess={goAfterLogin} onError={setError} />
-      </form>
+          <GoogleAuthButton onSuccess={goAfterLogin} onError={setError} />
+        </form>
 
-      <p className="muted" style={{ marginTop: 16, fontSize: 14 }}>
-        ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
-      </p>
+        <p className="muted" style={{ marginTop: 16, fontSize: 14 }}>
+          ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
+        </p>
+      </div>
     </div>
   );
 }

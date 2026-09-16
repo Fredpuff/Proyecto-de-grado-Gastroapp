@@ -50,8 +50,10 @@ export default function RestaurantDetailPage() {
   if (loading) return <RestaurantDetailSkeleton />;
   if (error)
     return (
-      <div className="container" style={{ padding: 40 }}>
-        <div className="alert alert-error">{error}</div>
+      <div className="dark-theme">
+        <div className="container" style={{ padding: 40 }}>
+          <div className="alert alert-error">{error}</div>
+        </div>
       </div>
     );
   if (!restaurant) return null;
@@ -63,10 +65,11 @@ export default function RestaurantDetailPage() {
   }, {});
 
   return (
-    <div className="container detail-page fade-in">
-      <Link to="/" className="muted detail-back-link">
-        ← Volver a la búsqueda
-      </Link>
+    <div className="dark-theme">
+      <div className="container detail-page fade-in">
+        <Link to="/" className="muted detail-back-link">
+          ← Volver a la búsqueda
+        </Link>
 
       <div>
         <div className="detail-header-row">
@@ -174,12 +177,14 @@ export default function RestaurantDetailPage() {
           </div>
         </aside>
       </div>
+      </div>
     </div>
   );
 }
 
 function RestaurantDetailSkeleton() {
   return (
+    <div className="dark-theme">
     <div className="container detail-page">
       <div className="skeleton-line" style={{ width: 140 }} />
 
@@ -220,6 +225,7 @@ function RestaurantDetailSkeleton() {
           <div className="skeleton-block" style={{ height: 180 }} />
         </aside>
       </div>
+    </div>
     </div>
   );
 }

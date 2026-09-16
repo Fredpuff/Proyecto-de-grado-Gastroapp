@@ -26,7 +26,7 @@ function pinIcon(emoji, bg) {
   });
 }
 
-const restaurantIcon = pinIcon('🍽️', '#c1552b');
+const restaurantIcon = pinIcon('🍽️', '#ff5f6d');
 const parkingIcon = pinIcon('🅿️', '#6e7b3d');
 
 export default function RestaurantMap({ restaurant, parkings = [] }) {
