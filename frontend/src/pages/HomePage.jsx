@@ -4,6 +4,7 @@ import RestaurantCard from '../components/RestaurantCard';
 import AnimatedHero from '../components/AnimatedHero';
 import { restaurantsApi } from '../api/resources';
 
+
 export default function HomePage() {
   const [filters, setFilters] = useState({});
   const [debouncedFilters, setDebouncedFilters] = useState({});
@@ -32,6 +33,7 @@ export default function HomePage() {
   }, [restaurants]);
 
   return (
+    
     <div className="dark-theme">
       <AnimatedHero
         eyebrow="Gastro Villavicencio"
