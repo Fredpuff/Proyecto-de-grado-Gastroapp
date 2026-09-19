@@ -10,7 +10,8 @@
     "seed": "node scripts/runSeed.js",
     "collect-data": "node scripts/collectRestaurantData.js",
     "collect-data:places": "node scripts/collectRestaurantData.js --dry-run",
-    "seed-test-reviews": "node scripts/seedTestReviews.js"
+    "seed-test-reviews": "node scripts/seedTestReviews.js",
+    "nlp:backfill": "node scripts/analyzeExistingReviews.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
