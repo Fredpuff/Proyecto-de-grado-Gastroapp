@@ -4,7 +4,7 @@ function getToken() {
   return localStorage.getItem('gsi_token');
 }
 
-async function request(path, { method = 'GET', body, auth = false } = {}) {
+async function request(path, { method = 'GET', body, auth = false, signal } = {}) {
   const headers = { 'Content-Type': 'application/json' };
 
   if (auth) {
@@ -15,7 +15,8 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
   const res = await fetch(`${API_URL}${path}`, {
     method,
     headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    signal
   });
 
   if (res.status === 204) return null;

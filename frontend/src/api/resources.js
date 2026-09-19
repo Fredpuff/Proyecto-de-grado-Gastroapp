@@ -39,7 +39,8 @@ export const parkingsApi = {
 
 export const reviewsApi = {
   listByRestaurant: (restaurantId) => api.get(`/restaurants/${restaurantId}/reviews`),
-  create: (restaurantId, payload) => api.post(`/restaurants/${restaurantId}/reviews`, payload, { auth: true })
+  create: (restaurantId, payload) => api.post(`/restaurants/${restaurantId}/reviews`, payload, { auth: true }),
+  insights: (restaurantId, opts) => api.get(`/restaurants/${restaurantId}/insights`, opts)
 };
 
 export const chatApi = {

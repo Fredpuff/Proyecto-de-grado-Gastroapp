@@ -1,5 +1,7 @@
 import StarRating from './StarRating';
 
+const SENTIMENT_LABELS = { positivo: 'Positiva', neutral: 'Neutral', negativo: 'Negativa', mixto: 'Mixta' };
+
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' });
 }
@@ -18,7 +20,14 @@ export default function ReviewList({ reviews, newReviewId }) {
           style={{ padding: 14 }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <strong>{r.user_name}</strong>
+            <span>
+              <strong>{r.user_name}</strong>
+              {r.sentiment && (
+                <span className="review-sentiment-tag" data-sentiment={r.sentiment}>
+                  {SENTIMENT_LABELS[r.sentiment] || r.sentiment}
+                </span>
+              )}
+            </span>
             <span className="muted" style={{ fontSize: 12.5 }}>
               {formatDate(r.created_at)}
             </span>

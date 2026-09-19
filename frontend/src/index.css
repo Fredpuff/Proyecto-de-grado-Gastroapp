@@ -1086,6 +1086,132 @@ img {
   margin-top: 8px;
 }
 
+/* --- Análisis de opiniones (sentimiento de reseñas) --- */
+.review-insights {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.review-insights-headline {
+  margin: 0;
+  font-weight: 600;
+}
+.sentiment-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(245, 238, 240, 0.1);
+}
+.sentiment-bar-segment {
+  height: 100%;
+}
+.sentiment-bar-segment-positivo {
+  background: var(--color-olive);
+}
+.sentiment-bar-segment-mixto {
+  background: var(--color-accent);
+}
+.sentiment-bar-segment-neutral {
+  background: rgba(245, 238, 240, 0.32);
+}
+.sentiment-bar-segment-negativo {
+  background: var(--color-primary);
+}
+.sentiment-bar-counts {
+  margin: 0;
+  font-size: 13px;
+}
+.review-insights-summary {
+  margin: 0;
+  font-style: italic;
+}
+.aspect-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.aspect-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.aspect-row-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13.5px;
+}
+.aspect-name {
+  font-weight: 600;
+}
+.aspect-bar-track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(245, 238, 240, 0.1);
+  overflow: hidden;
+}
+.aspect-bar-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(245, 238, 240, 0.3);
+}
+.aspect-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+}
+.aspect-bar-fill-positive {
+  background: var(--color-olive);
+}
+.aspect-bar-fill-negative {
+  background: var(--color-primary);
+}
+.aspect-mentions {
+  font-size: 12px;
+}
+.review-insights-keywords {
+  margin: 0;
+  font-size: 13.5px;
+}
+
+.review-sentiment-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.review-sentiment-tag[data-sentiment='positivo'] {
+  background: rgba(110, 123, 61, 0.28);
+  color: var(--color-olive-light);
+}
+.review-sentiment-tag[data-sentiment='negativo'] {
+  background: rgba(217, 45, 74, 0.22);
+  color: #ff8fa3;
+}
+.review-sentiment-tag[data-sentiment='neutral'] {
+  background: rgba(245, 238, 240, 0.12);
+  color: var(--dark-text-muted, var(--color-text-muted));
+}
+.review-sentiment-tag[data-sentiment='mixto'] {
+  background: rgba(245, 166, 35, 0.22);
+  color: var(--color-accent-light);
+}
+
 /* --- Chat de recomendaciones con IA --- */
 .chat-widget {
   position: fixed;

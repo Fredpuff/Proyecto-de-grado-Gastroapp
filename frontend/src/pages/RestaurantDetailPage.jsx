@@ -9,6 +9,7 @@ import PriceIndicator from '../components/PriceIndicator';
 import RestaurantMap from '../components/RestaurantMap';
 import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
+import ReviewInsights from '../components/ReviewInsights';
 
 export default function RestaurantDetailPage() {
   const { id } = useParams();
@@ -117,6 +118,8 @@ export default function RestaurantDetailPage() {
               </div>
             ))}
           </section>
+
+          <ReviewInsights restaurantId={id} />
 
           <section>
             <h2>Reseñas ({reviews.length})</h2>
