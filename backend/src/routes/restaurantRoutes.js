@@ -21,5 +21,6 @@ router.post('/:restaurantId/menu', requireAuth, requireRole('admin'), menuContro
 // Reseñas anidadas bajo un restaurante
 router.get('/:restaurantId/reviews', reviewController.listByRestaurant);
 router.post('/:restaurantId/reviews', requireAuth, requireRole('cliente', 'admin'), reviewController.create);
+router.get('/:restaurantId/insights', reviewController.getInsights);
 
 module.exports = router;

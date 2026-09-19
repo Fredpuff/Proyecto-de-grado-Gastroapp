@@ -1,11 +1,13 @@
 const pool = require('../config/db');
 const { recalculateRatingAvg } = require('../utils/ratingAvg');
+const { getRestaurantInsights, reanalyzePending, analyzeReviewSafe } = require('../services/reviewNlp.service');
 
 // GET /api/restaurants/:restaurantId/reviews
 async function listByRestaurant(req, res, next) {
   try {
     const [rows] = await pool.query(
-      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, u.id AS user_id, u.name AS user_name
+      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score,
+              u.id AS user_id, u.name AS user_name
        FROM reviews rv
        JOIN users u ON u.id = rv.user_id
        WHERE rv.restaurant_id = ?
@@ -40,10 +42,16 @@ async function create(req, res, next) {
       [restaurantId, req.user.id, rating, comment]
     );
 
+    // Análisis de sentimiento en segundo plano: sin await, no debe retrasar
+    // la respuesta al cliente. analyzeReviewSafe nunca lanza, pero el .catch
+    // evita una advertencia de "unhandled rejection" si algo inesperado pasa.
+    analyzeReviewSafe(result.insertId).catch(() => {});
+
     await recalculateRatingAvg(pool, restaurantId);
 
     const [rows] = await pool.query(
-      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, u.id AS user_id, u.name AS user_name
+      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score,
+              u.id AS user_id, u.name AS user_name
        FROM reviews rv JOIN users u ON u.id = rv.user_id WHERE rv.id = ?`,
       [result.insertId]
     );
@@ -54,4 +62,101 @@ async function create(req, res, next) {
   }
 }
 
-module.exports = { listByRestaurant, create };
+// GET /api/restaurants/:restaurantId/insights (público)
+async function getInsights(req, res, next) {
+  try {
+    const restaurantId = Number(req.params.restaurantId);
+    if (!Number.isInteger(restaurantId) || restaurantId <= 0) {
+      return res.status(400).json({ message: 'restaurantId inválido' });
+    }
+
+    const row = await getRestaurantInsights(restaurantId);
+
+    if (!row) {
+      return res.json({
+        totalAnalyzed: 0,
+        sentimentIndex: null,
+        counts: { positivo: 0, neutral: 0, negativo: 0, mixto: 0 },
+        aspects: [],
+        keywords: [],
+        summary: null,
+        updatedAt: null
+      });
+    }
+
+    let aspectScores = row.aspect_scores;
+    if (typeof aspectScores === 'string') {
+      try {
+        aspectScores = JSON.parse(aspectScores);
+      } catch {
+        aspectScores = {};
+      }
+    }
+    aspectScores = aspectScores || {};
+
+    let topKeywords = row.top_keywords;
+    if (typeof topKeywords === 'string') {
+      try {
+        topKeywords = JSON.parse(topKeywords);
+      } catch {
+        topKeywords = [];
+      }
+    }
+    topKeywords = topKeywords || [];
+
+    const aspects = Object.entries(aspectScores)
+      .map(([aspect, v]) => ({
+        aspect,
+        score: Number(v.score),
+        mentions: Number(v.mentions),
+        positive: Number(v.positive),
+        negative: Number(v.negative)
+      }))
+      .sort((a, b) => b.mentions - a.mentions);
+
+    const avgScore = row.avg_score !== null && row.avg_score !== undefined ? Number(row.avg_score) : null;
+    const sentimentIndex = avgScore !== null ? Math.round(((avgScore + 1) / 2) * 100) : null;
+
+    res.json({
+      totalAnalyzed: Number(row.total_analyzed) || 0,
+      sentimentIndex,
+      counts: {
+        positivo: Number(row.positive_count) || 0,
+        neutral: Number(row.neutral_count) || 0,
+        negativo: Number(row.negative_count) || 0,
+        mixto: Number(row.mixed_count) || 0
+      },
+      aspects,
+      keywords: topKeywords,
+      summary: row.summary || null,
+      updatedAt: row.updated_at
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+// POST /api/reviews/reanalyze (admin) — reprocesa reseñas pending/failed
+async function reanalyze(req, res, next) {
+  try {
+    const body = req.body || {};
+
+    let limit = Number(body.limit) || 100;
+    limit = Math.min(Math.max(limit, 1), 100);
+
+    let restaurantId = null;
+    if (body.restaurantId !== undefined && body.restaurantId !== null) {
+      restaurantId = Number(body.restaurantId);
+      if (!Number.isInteger(restaurantId) || restaurantId <= 0) {
+        return res.status(400).json({ message: 'restaurantId inválido' });
+      }
+    }
+
+    const counts = await reanalyzePending({ limit, concurrency: 3, restaurantId });
+    res.json(counts);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { listByRestaurant, create, getInsights, reanalyze };
