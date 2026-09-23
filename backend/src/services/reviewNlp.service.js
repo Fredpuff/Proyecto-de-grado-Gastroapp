@@ -49,13 +49,23 @@ forma EXACTA:
                "sentimiento": "positivo" | "neutral" | "negativo" | "mixto",
                "puntaje": number entre -1 y 1,
                "evidencia": "fragmento textual corto de la reseña, máximo 15 palabras"}],
- "palabras_clave": ["hasta 5 palabras o frases cortas relevantes"],
+ "palabras_clave": ["hasta 5 términos de 1 a 3 palabras copiados del texto de la reseña"],
  "moderacion": {"spam": boolean, "ofensivo": boolean}}
 
 Reglas:
 - Solo incluye en "aspectos" los que la reseña realmente mencione (puede ser una lista vacía).
 - "evidencia" debe ser un fragmento tomado muy de cerca del propio texto de la reseña, nunca
   inventado.
+- "palabras_clave" son términos, sustantivos o fragmentos cortos (1 a 3 palabras) que aparecen
+  TAL CUAL en el texto entre <resena></resena>, admitiendo solo variaciones mínimas de
+  mayúsculas, tildes, género o número: cada una debe poder encontrarse con un Ctrl+F sobre la
+  reseña. Prefiere sustantivos sueltos (platos, bebidas, personal, lugar). Si son varias
+  palabras, deben ir seguidas en el texto: no quites palabras intermedias (de "la mamona quedó
+  muy jugosa" vale "mamona", no "mamona jugosa"). NUNCA pongas una palabra que resuma el
+  sentimiento o interprete la intención si esa palabra no está escrita en la reseña (por ejemplo,
+  para "Rico" no pongas "comida deliciosa"; para "No volvería" no pongas "insatisfacción"). Si la
+  reseña es muy corta o no tiene términos claros que extraer, deja la lista vacía: es preferible
+  a inventar.
 - "spam" es true solo si el texto es publicidad, un enlace suelto, o no dice nada sobre la
   experiencia. "ofensivo" es true solo si contiene insultos, discurso de odio o contenido
   inapropiado, no por una crítica dura pero legítima.
@@ -186,8 +196,34 @@ function normalizeAspects(raw) {
   return result;
 }
 
-function normalizeKeywords(raw) {
+// Minúsculas, sin tildes/diacríticos y con espacios colapsados, para comparar
+// palabras clave contra el texto de la reseña.
+function foldText(str) {
+  return String(str)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Quita la "s" final de cada palabra: tolera el plural simple ("rolls" vs.
+// "roll", "postres" vs. "postre").
+function stripSimplePlural(folded) {
+  return folded.replace(/(\w\w)s\b/g, '$1');
+}
+
+// Defensa en código (no solo en el prompt): una palabra clave solo se acepta
+// si aparece en el texto de la reseña, para no mostrar interpretaciones del
+// modelo ("comida deliciosa" para "Rico") como si el cliente las hubiera escrito.
+function appearsInText(keyword, foldedText) {
+  const folded = foldText(keyword);
+  return foldedText.includes(folded) || foldedText.includes(stripSimplePlural(folded));
+}
+
+function normalizeKeywords(raw, sourceText) {
   if (!Array.isArray(raw)) return [];
+  const foldedText = foldText(sourceText || '');
   const seen = new Set();
   const result = [];
 
@@ -196,6 +232,7 @@ function normalizeKeywords(raw) {
     const clean = kw.trim().slice(0, 60);
     const key = clean.toLowerCase();
     if (!clean || seen.has(key)) continue;
+    if (!appearsInText(clean, foldedText)) continue;
     seen.add(key);
     result.push(clean);
     if (result.length >= MAX_KEYWORDS) break;
@@ -302,7 +339,7 @@ async function analyzeReview(reviewId) {
   const parsed = parseModelJson(text);
   const { sentiment, score } = normalizeSentiment(parsed.sentimiento, parsed.puntaje);
   const aspects = normalizeAspects(parsed.aspectos);
-  const keywords = normalizeKeywords(parsed.palabras_clave);
+  const keywords = normalizeKeywords(parsed.palabras_clave, review.comment);
   const moderation = normalizeModeration(parsed.moderacion);
   const ratingMismatch = computeRatingMismatch(review.rating, sentiment);
 
