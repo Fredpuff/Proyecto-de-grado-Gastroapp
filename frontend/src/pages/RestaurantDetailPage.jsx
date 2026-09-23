@@ -11,6 +11,9 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import ReviewInsights from '../components/ReviewInsights';
 
+const ANALYSIS_POLL_MS = 4000;
+const ANALYSIS_POLL_MAX_ATTEMPTS = 5;
+
 export default function RestaurantDetailPage() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -22,6 +25,10 @@ export default function RestaurantDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newReviewId, setNewReviewId] = useState(null);
+  // Reseña recién creada cuyo análisis de sentimiento (que corre en segundo
+  // plano en el backend) todavía no ha terminado.
+  const [analyzingReviewId, setAnalyzingReviewId] = useState(null);
+  const [insightsRefreshKey, setInsightsRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!newReviewId) return undefined;
@@ -29,9 +36,64 @@ export default function RestaurantDetailPage() {
     return () => clearTimeout(timer);
   }, [newReviewId]);
 
+  // Polling corto tras crear una reseña: refresca lista, rating y análisis
+  // cada ANALYSIS_POLL_MS hasta que la reseña tenga sentimiento (más una
+  // vuelta extra, porque los agregados del restaurante se recalculan justo
+  // después) o se agoten los intentos (reseña omitida o análisis fallido).
+  useEffect(() => {
+    if (!analyzingReviewId) return undefined;
+    let cancelled = false;
+    let attempts = 0;
+    let analyzed = false;
+    let timer;
+
+    async function tick() {
+      attempts += 1;
+      try {
+        const [rv, r] = await Promise.all([reviewsApi.listByRestaurant(id), restaurantsApi.get(id)]);
+        if (cancelled) return;
+        setReviews(rv);
+        setRestaurant(r);
+        setInsightsRefreshKey((k) => k + 1);
+        const wasAnalyzed = analyzed;
+        analyzed = !!rv.find((x) => x.id === analyzingReviewId)?.sentiment;
+        if (wasAnalyzed) {
+          setAnalyzingReviewId(null);
+          return;
+        }
+      } catch {
+        if (cancelled) return;
+      }
+      if (attempts >= ANALYSIS_POLL_MAX_ATTEMPTS && !analyzed) {
+        setAnalyzingReviewId(null);
+        return;
+      }
+      timer = setTimeout(tick, ANALYSIS_POLL_MS);
+    }
+
+    timer = setTimeout(tick, ANALYSIS_POLL_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [analyzingReviewId, id]);
+
+  async function handleReviewCreated(review) {
+    setReviews((prev) => [review, ...prev.filter((x) => x.id !== review.id)]);
+    setNewReviewId(review.id);
+    setAnalyzingReviewId(review.id);
+    // El POST ya recalculó rating_avg: se refresca de inmediato el encabezado.
+    try {
+      setRestaurant(await restaurantsApi.get(id));
+    } catch {
+      // no crítico: el polling lo vuelve a intentar
+    }
+  }
+
   useEffect(() => {
     setLoading(true);
     setError('');
+    setAnalyzingReviewId(null);
     Promise.all([
       restaurantsApi.get(id),
       menuApi.listByRestaurant(id),
@@ -119,19 +181,13 @@ export default function RestaurantDetailPage() {
             ))}
           </section>
 
-          <ReviewInsights restaurantId={id} />
+          <ReviewInsights restaurantId={id} refreshKey={insightsRefreshKey} />
 
           <section>
             <h2>Reseñas ({reviews.length})</h2>
             <div className="reviews-list">
               {user ? (
-                <ReviewForm
-                  restaurantId={id}
-                  onCreated={(r) => {
-                    setReviews([r, ...reviews]);
-                    setNewReviewId(r.id);
-                  }}
-                />
+                <ReviewForm restaurantId={id} onCreated={handleReviewCreated} />
               ) : (
                 <p className="muted">
                   <Link to="/login">Inicia sesión</Link> para dejar tu reseña.

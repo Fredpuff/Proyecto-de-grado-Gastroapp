@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { reviewsApi } from '../api/resources';
 
 const ASPECT_LABELS = {
@@ -44,14 +44,23 @@ function AspectBar({ score }) {
   );
 }
 
-export default function ReviewInsights({ restaurantId }) {
+// refreshKey: el padre lo incrementa para pedir un refetch (p. ej. cuando
+// termina el análisis de una reseña recién creada). Los refetch no vuelven a
+// mostrar el skeleton ni borran los datos si fallan: solo la carga inicial.
+export default function ReviewInsights({ restaurantId, refreshKey = 0 }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const dataRef = useRef(null);
+  dataRef.current = data;
+
+  useEffect(() => {
+    setData(null);
+    setLoading(true);
+  }, [restaurantId]);
 
   useEffect(() => {
     const controller = new AbortController();
-    setLoading(true);
     setError('');
 
     reviewsApi
@@ -59,14 +68,14 @@ export default function ReviewInsights({ restaurantId }) {
       .then(setData)
       .catch((err) => {
         if (err.name === 'AbortError') return;
-        setError(err.message || 'No pudimos cargar el análisis de opiniones.');
+        if (!dataRef.current) setError(err.message || 'No pudimos cargar el análisis de opiniones.');
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false);
       });
 
     return () => controller.abort();
-  }, [restaurantId]);
+  }, [restaurantId, refreshKey]);
 
   if (loading) {
     return (
