@@ -5,6 +5,11 @@ const { getRestaurantInsights, reanalyzePending, analyzeReviewSafe } = require('
 // GET /api/restaurants/:restaurantId/reviews
 async function listByRestaurant(req, res, next) {
   try {
+    const restaurantId = Number(req.params.restaurantId);
+    if (!Number.isInteger(restaurantId) || restaurantId <= 0) {
+      return res.status(400).json({ message: 'restaurantId inválido' });
+    }
+
     const [rows] = await pool.query(
       `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score,
               u.id AS user_id, u.name AS user_name
@@ -12,7 +17,7 @@ async function listByRestaurant(req, res, next) {
        JOIN users u ON u.id = rv.user_id
        WHERE rv.restaurant_id = ?
        ORDER BY rv.created_at DESC`,
-      [req.params.restaurantId]
+      [restaurantId]
     );
     res.json(rows);
   } catch (err) {
@@ -26,10 +31,19 @@ async function listByRestaurant(req, res, next) {
 async function create(req, res, next) {
   try {
     const { rating, comment = null } = req.body;
-    const restaurantId = req.params.restaurantId;
+    const restaurantId = Number(req.params.restaurantId);
 
-    if (rating === undefined || rating < 1 || rating > 5) {
-      return res.status(400).json({ message: 'rating es obligatorio y debe estar entre 1 y 5' });
+    // Number(rating) + Number.isInteger evita el bypass por NaN: con el
+    // operador `<`/`>` original, un rating no numérico (ej. "abc" u objetos)
+    // nunca es < 1 ni > 5 porque cualquier comparación con NaN es false, así
+    // que pasaba la validación y llegaba crudo al INSERT.
+    const ratingNum = Number(rating);
+    if (rating === undefined || !Number.isInteger(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+      return res.status(400).json({ message: 'rating es obligatorio y debe ser un entero entre 1 y 5' });
+    }
+
+    if (!Number.isInteger(restaurantId) || restaurantId <= 0) {
+      return res.status(400).json({ message: 'restaurantId inválido' });
     }
 
     const [restaurantRows] = await pool.query('SELECT id FROM restaurants WHERE id = ?', [restaurantId]);
@@ -39,7 +53,7 @@ async function create(req, res, next) {
 
     const [result] = await pool.query(
       'INSERT INTO reviews (restaurant_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',
-      [restaurantId, req.user.id, rating, comment]
+      [restaurantId, req.user.id, ratingNum, comment]
     );
 
     // Análisis de sentimiento en segundo plano: sin await, no debe retrasar
