@@ -600,10 +600,82 @@ async function reanalyzePending({ limit = 100, concurrency = 3, restaurantId = n
   return counts;
 }
 
+function parseStoredKeywords(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value !== 'string') return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+// Vuelve a pedir al modelo SOLO las palabras clave de un comentario (con el
+// prompt actual) y las pasa por el mismo filtro que analyzeReview.
+async function extractKeywords(comment) {
+  const text = await callClaude({
+    system: ANALYSIS_SYSTEM_PROMPT,
+    userContent: buildAnalysisUserMessage(comment),
+    maxTokens: 700,
+    temperature: 0
+  });
+  return normalizeKeywords(parseModelJson(text).palabras_clave, comment);
+}
+
+// Corrige las palabras clave de reseñas YA analizadas antes del filtro
+// appearsInText: para cada una con alguna palabra que no aparece en el
+// comentario, las vuelve a extraer con el modelo (si falla o no hay API key,
+// se queda con las viejas filtradas). Solo actualiza `keywords`: sentimiento,
+// puntaje, aspectos y moderación no se tocan. Con dryRun no llama al modelo
+// ni escribe nada. Refresca los insights de los restaurantes afectados.
+async function refilterStoredKeywords({ dryRun = false, restaurantId = null } = {}) {
+  const params = [];
+  let where = "analysis_status = 'done' AND keywords IS NOT NULL";
+  if (restaurantId) {
+    where += ' AND restaurant_id = ?';
+    params.push(restaurantId);
+  }
+
+  const [rows] = await pool.query(`SELECT id, restaurant_id, comment, keywords FROM reviews WHERE ${where}`, params);
+
+  const changes = [];
+  for (const row of rows) {
+    const before = parseStoredKeywords(row.keywords);
+    const filtered = normalizeKeywords(before, row.comment);
+    if (filtered.length === before.length) continue;
+    changes.push({ id: row.id, restaurantId: row.restaurant_id, comment: row.comment, before, after: filtered, source: 'filtro' });
+  }
+
+  if (!dryRun) {
+    for (const c of changes) {
+      if (process.env.ANTHROPIC_API_KEY) {
+        try {
+          c.after = await extractKeywords(c.comment);
+          c.source = 'modelo';
+        } catch (err) {
+          console.error(`[reviewNlp] No se pudieron re-extraer las palabras clave de la reseña ${c.id}:`, err.message);
+        }
+      }
+      await pool.query('UPDATE reviews SET keywords = ? WHERE id = ?', [JSON.stringify(c.after), c.id]);
+    }
+    for (const rid of new Set(changes.map((c) => c.restaurantId))) {
+      try {
+        await refreshRestaurantInsights(rid);
+      } catch (err) {
+        console.error(`[reviewNlp] No se pudieron refrescar los insights del restaurante ${rid}:`, err.message);
+      }
+    }
+  }
+
+  return { reviewed: rows.length, changes };
+}
+
 module.exports = {
   analyzeReview,
   analyzeReviewSafe,
   refreshRestaurantInsights,
   getRestaurantInsights,
-  reanalyzePending
+  reanalyzePending,
+  refilterStoredKeywords
 };
