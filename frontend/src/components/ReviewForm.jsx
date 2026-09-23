@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { reviewsApi } from '../api/resources';
+import StarInput from './StarInput';
 
 export default function ReviewForm({ restaurantId, onCreated }) {
   const [rating, setRating] = useState(5);
@@ -29,15 +30,8 @@ export default function ReviewForm({ restaurantId, onCreated }) {
       {error && <div className="alert alert-error">{error}</div>}
 
       <div className="field">
-        <label htmlFor="rating">Calificación</label>
-        <select id="rating" value={rating} onChange={(e) => setRating(e.target.value)}>
-          {[5, 4, 3, 2, 1].map((n) => (
-            <option key={n} value={n}>
-              {'★'.repeat(n)}
-              {'☆'.repeat(5 - n)} ({n})
-            </option>
-          ))}
-        </select>
+        <label>Calificación</label>
+        <StarInput id="rating" value={rating} onChange={setRating} disabled={submitting} />
       </div>
 
       <div className="field">

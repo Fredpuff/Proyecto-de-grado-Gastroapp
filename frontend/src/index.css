@@ -1212,6 +1212,44 @@ img {
   color: var(--color-accent-light);
 }
 
+/* --- Selector de calificación con estrellas (formulario de reseña) --- */
+.star-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.star-input-stars {
+  display: inline-flex;
+}
+.star-input-star {
+  background: none;
+  border: none;
+  padding: 2px 3px;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--star-empty-color, #dcd2c0);
+  transition: transform 120ms ease-out, color 120ms ease-out;
+}
+.star-input-star-on {
+  color: var(--color-accent);
+}
+.star-input-star:hover:not(:disabled) {
+  transform: scale(1.12);
+}
+.star-input-star:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+.star-input-label {
+  font-size: 0.9rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .star-input-star {
+    transition: none;
+  }
+}
+
 /* --- Chat de recomendaciones con IA --- */
 .chat-widget {
   position: fixed;
