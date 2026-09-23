@@ -19,7 +19,9 @@ const MODEL = process.env.REVIEW_NLP_MODEL || 'claude-haiku-4-5-20251001';
 const SENTIMENTS = ['positivo', 'neutral', 'negativo', 'mixto'];
 const ASPECTS = ['comida', 'servicio', 'ambiente', 'precio', 'limpieza', 'parqueadero', 'tiempo_espera'];
 
-const MIN_COMMENT_LENGTH = 8;
+// En español una sola palabra ya es una opinión completa ("Rico", "Malo",
+// "Pésimo"), así que solo se omiten comentarios vacíos o de 1 carácter.
+const MIN_COMMENT_LENGTH = 2;
 const MAX_KEYWORDS = 5;
 const MAX_EVIDENCE_WORDS = 15;
 const MIN_REVIEWS_FOR_SUMMARY = 3;
@@ -517,11 +519,16 @@ async function withConcurrency(items, worker, concurrency) {
   await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, runNext));
 }
 
-// Reanaliza reseñas pendientes/fallidas con un pool de workers, y refresca los
-// insights de cada restaurante afectado UNA sola vez al final (no por reseña).
+// Reanaliza reseñas pendientes/fallidas (y omitidas con texto) con un pool de
+// workers, y refresca los insights de cada restaurante afectado UNA sola vez
+// al final (no por reseña).
 async function reanalyzePending({ limit = 100, concurrency = 3, restaurantId = null } = {}) {
   const params = [];
-  let where = "analysis_status IN ('pending', 'failed')";
+  // También recoge las 'skipped' que hoy sí tienen texto analizable (p. ej.
+  // reseñas cortas omitidas cuando el umbral era de 8 caracteres).
+  let where =
+    "(analysis_status IN ('pending', 'failed') OR " +
+    `(analysis_status = 'skipped' AND CHAR_LENGTH(TRIM(comment)) >= ${MIN_COMMENT_LENGTH}))`;
   if (restaurantId) {
     where += ' AND restaurant_id = ?';
     params.push(restaurantId);

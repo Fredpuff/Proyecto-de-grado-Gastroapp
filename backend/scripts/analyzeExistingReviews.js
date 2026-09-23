@@ -2,7 +2,8 @@
  * analyzeExistingReviews.js
  * -----------------------------------------------------------------------------
  * Backfill: reanaliza (con IA) las reseñas existentes que estén en estado
- * 'pending' o 'failed', hasta 500 por corrida, con concurrencia 3.
+ * 'pending', 'failed' o 'skipped' con texto analizable, hasta 500 por corrida,
+ * con concurrencia 3.
  *
  * Uso:
  *   npm run nlp:backfill
