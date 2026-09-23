@@ -1,6 +1,11 @@
 const pool = require('../config/db');
 const { recalculateRatingAvg } = require('../utils/ratingAvg');
-const { getRestaurantInsights, reanalyzePending, analyzeReviewSafe } = require('../services/reviewNlp.service');
+const {
+  getRestaurantInsights,
+  reanalyzePending,
+  analyzeReviewSafe,
+  refreshRestaurantInsights
+} = require('../services/reviewNlp.service');
 
 // GET /api/restaurants/:restaurantId/reviews
 async function listByRestaurant(req, res, next) {
@@ -59,7 +64,16 @@ async function create(req, res, next) {
     // Análisis de sentimiento en segundo plano: sin await, no debe retrasar
     // la respuesta al cliente. analyzeReviewSafe nunca lanza, pero el .catch
     // evita una advertencia de "unhandled rejection" si algo inesperado pasa.
-    analyzeReviewSafe(result.insertId).catch(() => {});
+    // Si el análisis queda 'done', refresca también los agregados del
+    // restaurante: si no, GET /insights se queda con datos viejos hasta que
+    // alguien corra el backfill o /reviews/reanalyze manualmente.
+    analyzeReviewSafe(result.insertId)
+      .then((analysis) => {
+        if (analysis.status === 'done') return refreshRestaurantInsights(restaurantId);
+      })
+      .catch((err) => {
+        console.error(`[reviewController] No se pudieron refrescar los insights del restaurante ${restaurantId}:`, err.message);
+      });
 
     await recalculateRatingAvg(pool, restaurantId);
 
