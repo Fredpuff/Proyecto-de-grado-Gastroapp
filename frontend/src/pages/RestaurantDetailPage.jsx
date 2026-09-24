@@ -10,6 +10,7 @@ import RestaurantMap from '../components/RestaurantMap';
 import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import ReviewInsights from '../components/ReviewInsights';
+import RatingSummary from '../components/RatingSummary';
 
 const ANALYSIS_POLL_MS = 4000;
 const ANALYSIS_POLL_MAX_ATTEMPTS = 5;
@@ -22,11 +23,10 @@ export default function RestaurantDetailPage() {
   const [menu, setMenu] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [nearbyParkings, setNearbyParkings] = useState([]);
+  const [ratingSummaryData, setRatingSummaryData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newReviewId, setNewReviewId] = useState(null);
-  // Reseña recién creada cuyo análisis de sentimiento (que corre en segundo
-  // plano en el backend) todavía no ha terminado.
   const [analyzingReviewId, setAnalyzingReviewId] = useState(null);
   const [insightsRefreshKey, setInsightsRefreshKey] = useState(0);
 
@@ -82,9 +82,13 @@ export default function RestaurantDetailPage() {
     setReviews((prev) => [review, ...prev.filter((x) => x.id !== review.id)]);
     setNewReviewId(review.id);
     setAnalyzingReviewId(review.id);
-    // El POST ya recalculó rating_avg: se refresca de inmediato el encabezado.
     try {
-      setRestaurant(await restaurantsApi.get(id));
+      const [r, rs] = await Promise.all([
+        restaurantsApi.get(id),
+        restaurantsApi.ratingSummary(id).catch(() => null)
+      ]);
+      setRestaurant(r);
+      if (rs) setRatingSummaryData(rs);
     } catch {
       // no crítico: el polling lo vuelve a intentar
     }
@@ -98,13 +102,15 @@ export default function RestaurantDetailPage() {
       restaurantsApi.get(id),
       menuApi.listByRestaurant(id),
       reviewsApi.listByRestaurant(id),
-      restaurantsApi.nearbyParkings(id, 2)
+      restaurantsApi.nearbyParkings(id, 2),
+      restaurantsApi.ratingSummary(id).catch(() => null)
     ])
-      .then(([r, m, rv, p]) => {
+      .then(([r, m, rv, p, rs]) => {
         setRestaurant(r);
         setMenu(m);
         setReviews(rv);
         setNearbyParkings(p);
+        setRatingSummaryData(rs);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -133,6 +139,12 @@ export default function RestaurantDetailPage() {
         <Link to="/" className="muted detail-back-link">
           ← Volver a la búsqueda
         </Link>
+
+        {restaurant.image_url && (
+          <div className="restaurant-detail-hero">
+            <img src={restaurant.image_url} alt={restaurant.name} loading="lazy" />
+          </div>
+        )}
 
       <div>
         <div className="detail-header-row">
@@ -199,6 +211,14 @@ export default function RestaurantDetailPage() {
         </div>
 
         <aside className="detail-aside">
+          {ratingSummaryData && (
+            <RatingSummary
+              ratingAvg={ratingSummaryData.ratingAvg}
+              totalCount={ratingSummaryData.totalCount}
+              breakdown={ratingSummaryData.breakdown}
+            />
+          )}
+
           <div className="card info-card">
             <h4>Información</h4>
             <p className="info-row">

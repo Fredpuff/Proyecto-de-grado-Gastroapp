@@ -4,6 +4,7 @@ const menuController = require('../controllers/menuController');
 const reviewController = require('../controllers/reviewController');
 const { requireAuth, requireRole } = require('../middleware/auth');
 
+
 const router = express.Router();
 
 // Restaurantes
@@ -13,6 +14,7 @@ router.post('/', requireAuth, requireRole('admin'), restaurantController.create)
 router.put('/:id', requireAuth, requireRole('admin'), restaurantController.update);
 router.delete('/:id', requireAuth, requireRole('admin'), restaurantController.remove);
 router.get('/:id/nearby-parkings', restaurantController.nearbyParkings);
+router.get('/:id/rating-summary', restaurantController.ratingSummary);
 
 // Menú anidado bajo un restaurante
 router.get('/:restaurantId/menu', menuController.listByRestaurant);
