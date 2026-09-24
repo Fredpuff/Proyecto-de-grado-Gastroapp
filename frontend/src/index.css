@@ -294,6 +294,7 @@ img {
 .filter-toggle-sm {
   padding: 5px 10px;
   font-size: 12.5px;
+  min-height: 36px;
 }
 .filter-toggle {
   position: relative;

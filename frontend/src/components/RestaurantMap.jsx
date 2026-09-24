@@ -69,7 +69,7 @@ export default function RestaurantMap({ restaurant, parkings = [] }) {
       <a
         href={mapsUrl}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         style={{
           display: 'inline-flex',
           alignItems: 'center',

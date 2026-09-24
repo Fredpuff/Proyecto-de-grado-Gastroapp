@@ -24,6 +24,7 @@ export default function RestaurantDetailPage() {
   const [reviews, setReviews] = useState([]);
   const [nearbyParkings, setNearbyParkings] = useState([]);
   const [ratingSummaryData, setRatingSummaryData] = useState(null);
+  const [heroImgFailed, setHeroImgFailed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newReviewId, setNewReviewId] = useState(null);
@@ -98,6 +99,7 @@ export default function RestaurantDetailPage() {
     setLoading(true);
     setError('');
     setAnalyzingReviewId(null);
+    setHeroImgFailed(false);
     Promise.all([
       restaurantsApi.get(id),
       menuApi.listByRestaurant(id),
@@ -140,9 +142,14 @@ export default function RestaurantDetailPage() {
           ← Volver a la búsqueda
         </Link>
 
-        {restaurant.image_url && (
+        {restaurant.image_url && !heroImgFailed && (
           <div className="restaurant-detail-hero">
-            <img src={restaurant.image_url} alt={restaurant.name} loading="lazy" />
+            <img
+              src={restaurant.image_url}
+              alt={restaurant.name}
+              loading="lazy"
+              onError={() => setHeroImgFailed(true)}
+            />
           </div>
         )}
 
