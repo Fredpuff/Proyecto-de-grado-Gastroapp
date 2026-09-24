@@ -18,8 +18,9 @@ async function list(req, res, next) {
       params.push(`%${q}%`, `%${q}%`);
     }
     if (cuisine) {
-      where.push('r.cuisine_type = ?');
-      params.push(cuisine);
+      const cuisineArr = Array.isArray(cuisine) ? cuisine : [cuisine];
+      where.push(`r.cuisine_type IN (${cuisineArr.map(() => '?').join(', ')})`);
+      params.push(...cuisineArr);
     }
     if (priceRange) {
       where.push('r.price_range = ?');
@@ -220,4 +221,27 @@ async function nearbyParkings(req, res, next) {
   }
 }
 
-module.exports = { list, getById, create, update, remove, nearbyParkings, NEIGHBORHOODS, PRICE_RANGES };
+// GET /api/restaurants/:id/rating-summary
+async function ratingSummary(req, res, next) {
+  try {
+    const [restRows] = await pool.query('SELECT rating_avg FROM restaurants WHERE id = ?', [req.params.id]);
+    if (restRows.length === 0) return res.status(404).json({ message: 'Restaurante no encontrado' });
+
+    const [rows] = await pool.query(
+      'SELECT rating, COUNT(*) AS count FROM reviews WHERE restaurant_id = ? GROUP BY rating ORDER BY rating DESC',
+      [req.params.id]
+    );
+
+    const breakdown = [5, 4, 3, 2, 1].map((r) => ({
+      rating: r,
+      count: Number((rows.find((x) => x.rating === r) || { count: 0 }).count)
+    }));
+    const totalCount = breakdown.reduce((s, x) => s + x.count, 0);
+
+    res.json({ ratingAvg: Number(restRows[0].rating_avg), totalCount, breakdown });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { list, getById, create, update, remove, nearbyParkings, ratingSummary, NEIGHBORHOODS, PRICE_RANGES };

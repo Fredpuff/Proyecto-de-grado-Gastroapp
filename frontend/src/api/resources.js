@@ -1,10 +1,19 @@
 import { api } from './client';
 
 function toQueryString(params = {}) {
-  const usable = Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '');
-  if (usable.length === 0) return '';
-  const search = new URLSearchParams(usable);
-  return `?${search.toString()}`;
+  const parts = [];
+  for (const [k, v] of Object.entries(params)) {
+    if (v === undefined || v === null || v === '') continue;
+    if (Array.isArray(v)) {
+      for (const item of v) {
+        if (item !== undefined && item !== null && item !== '') parts.push([k, item]);
+      }
+    } else {
+      parts.push([k, v]);
+    }
+  }
+  if (parts.length === 0) return '';
+  return `?${new URLSearchParams(parts).toString()}`;
 }
 
 export const authApi = {
@@ -20,7 +29,8 @@ export const restaurantsApi = {
   create: (payload) => api.post('/restaurants', payload, { auth: true }),
   update: (id, payload) => api.put(`/restaurants/${id}`, payload, { auth: true }),
   remove: (id) => api.del(`/restaurants/${id}`, { auth: true }),
-  nearbyParkings: (id, radiusKm) => api.get(`/restaurants/${id}/nearby-parkings${toQueryString({ radiusKm })}`)
+  nearbyParkings: (id, radiusKm) => api.get(`/restaurants/${id}/nearby-parkings${toQueryString({ radiusKm })}`),
+  ratingSummary: (id) => api.get(`/restaurants/${id}/rating-summary`)
 };
 
 export const menuApi = {

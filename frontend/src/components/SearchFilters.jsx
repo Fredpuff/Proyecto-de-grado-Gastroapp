@@ -5,6 +5,19 @@ export default function SearchFilters({ filters, cuisines, onChange, onReset }) 
     onChange({ ...filters, [field]: value });
   }
 
+  const selectedCuisines = Array.isArray(filters.cuisine)
+    ? filters.cuisine
+    : filters.cuisine
+      ? [filters.cuisine]
+      : [];
+
+  function toggleCuisine(c) {
+    const next = selectedCuisines.includes(c)
+      ? selectedCuisines.filter((x) => x !== c)
+      : [...selectedCuisines, c];
+    set('cuisine', next);
+  }
+
   return (
     <div className="filters-bar">
       <div className="field filters-bar-search">
@@ -16,18 +29,6 @@ export default function SearchFilters({ filters, cuisines, onChange, onReset }) 
           value={filters.q || ''}
           onChange={(e) => set('q', e.target.value)}
         />
-      </div>
-
-      <div className="field filters-bar-select">
-        <label htmlFor="cuisine">Tipo de cocina</label>
-        <select id="cuisine" value={filters.cuisine || ''} onChange={(e) => set('cuisine', e.target.value)}>
-          <option value="">Todas</option>
-          {cuisines.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="field filters-bar-select">
@@ -84,6 +85,24 @@ export default function SearchFilters({ filters, cuisines, onChange, onReset }) 
       <button className="btn btn-ghost btn-sm filters-bar-reset" onClick={onReset} type="button">
         Limpiar filtros
       </button>
+
+      {cuisines.length > 0 && (
+        <div className="filters-bar-cuisine-row">
+          <span className="filters-bar-cuisine-label">Cocina:</span>
+          <div className="cuisine-pills">
+            {cuisines.map((c) => (
+              <label key={c} className="filter-toggle filter-toggle-sm">
+                <input
+                  type="checkbox"
+                  checked={selectedCuisines.includes(c)}
+                  onChange={() => toggleCuisine(c)}
+                />
+                {c}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
