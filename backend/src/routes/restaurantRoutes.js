@@ -15,6 +15,7 @@ router.put('/:id', requireAuth, requireRole('admin'), restaurantController.updat
 router.delete('/:id', requireAuth, requireRole('admin'), restaurantController.remove);
 router.get('/:id/nearby-parkings', restaurantController.nearbyParkings);
 router.get('/:id/rating-summary', restaurantController.ratingSummary);
+router.get('/:id/photos', restaurantController.getPhotos);
 
 // Menú anidado bajo un restaurante
 router.get('/:restaurantId/menu', menuController.listByRestaurant);
