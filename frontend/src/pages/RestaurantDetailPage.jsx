@@ -11,6 +11,7 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import ReviewInsights from '../components/ReviewInsights';
 import RatingSummary from '../components/RatingSummary';
+import PhotoGallery from '../components/PhotoGallery';
 
 const ANALYSIS_POLL_MS = 4000;
 const ANALYSIS_POLL_MAX_ATTEMPTS = 5;
@@ -24,6 +25,7 @@ export default function RestaurantDetailPage() {
   const [reviews, setReviews] = useState([]);
   const [nearbyParkings, setNearbyParkings] = useState([]);
   const [ratingSummaryData, setRatingSummaryData] = useState(null);
+  const [galleryPhotos, setGalleryPhotos] = useState(null);
   const [heroImgFailed, setHeroImgFailed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -100,19 +102,22 @@ export default function RestaurantDetailPage() {
     setError('');
     setAnalyzingReviewId(null);
     setHeroImgFailed(false);
+    setGalleryPhotos(null);
     Promise.all([
       restaurantsApi.get(id),
       menuApi.listByRestaurant(id),
       reviewsApi.listByRestaurant(id),
       restaurantsApi.nearbyParkings(id, 2),
-      restaurantsApi.ratingSummary(id).catch(() => null)
+      restaurantsApi.ratingSummary(id).catch(() => null),
+      restaurantsApi.photos(id).catch(() => null)
     ])
-      .then(([r, m, rv, p, rs]) => {
+      .then(([r, m, rv, p, rs, ph]) => {
         setRestaurant(r);
         setMenu(m);
         setReviews(rv);
         setNearbyParkings(p);
         setRatingSummaryData(rs);
+        setGalleryPhotos(ph?.photos ?? []);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -142,15 +147,19 @@ export default function RestaurantDetailPage() {
           ← Volver a la búsqueda
         </Link>
 
-        {restaurant.image_url && !heroImgFailed && (
-          <div className="restaurant-detail-hero">
-            <img
-              src={restaurant.image_url}
-              alt={restaurant.name}
-              loading="lazy"
-              onError={() => setHeroImgFailed(true)}
-            />
-          </div>
+        {galleryPhotos && galleryPhotos.length > 0 ? (
+          <PhotoGallery photos={galleryPhotos} altPrefix={restaurant.name} />
+        ) : (
+          restaurant.image_url && !heroImgFailed && (
+            <div className="restaurant-detail-hero">
+              <img
+                src={restaurant.image_url}
+                alt={restaurant.name}
+                loading="lazy"
+                onError={() => setHeroImgFailed(true)}
+              />
+            </div>
+          )
         )}
 
       <div>

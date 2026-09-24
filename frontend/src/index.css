@@ -1205,9 +1205,95 @@ img {
   object-fit: cover;
   display: block;
 }
+/* --- Carrusel de fotos (PhotoGallery) --- */
+.photo-gallery {
+  width: 100%;
+  margin-bottom: 24px;
+}
+.photo-gallery-track {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-border);
+}
+.photo-gallery-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.photo-gallery-img.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.photo-gallery-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.2s;
+}
+.photo-gallery-btn:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+.photo-gallery-btn-prev { left: 10px; }
+.photo-gallery-btn-next { right: 10px; }
+.photo-gallery-counter {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  z-index: 2;
+}
+.photo-gallery-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.photo-gallery-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+.photo-gallery-dot.active {
+  background: var(--color-primary);
+  transform: scale(1.25);
+}
+
 @media (max-width: 640px) {
   .restaurant-detail-hero {
     aspect-ratio: 16 / 7;
+  }
+  .photo-gallery-track {
+    aspect-ratio: 16 / 8;
   }
   .rating-summary {
     flex-direction: column;

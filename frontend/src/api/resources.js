@@ -30,7 +30,8 @@ export const restaurantsApi = {
   update: (id, payload) => api.put(`/restaurants/${id}`, payload, { auth: true }),
   remove: (id) => api.del(`/restaurants/${id}`, { auth: true }),
   nearbyParkings: (id, radiusKm) => api.get(`/restaurants/${id}/nearby-parkings${toQueryString({ radiusKm })}`),
-  ratingSummary: (id) => api.get(`/restaurants/${id}/rating-summary`)
+  ratingSummary: (id) => api.get(`/restaurants/${id}/rating-summary`),
+  photos: (id) => api.get(`/restaurants/${id}/photos`)
 };
 
 export const menuApi = {
