@@ -415,8 +415,7 @@ img {
 }
 /* La foto aparece solo cuando cargó: si falla, se cambia por el placeholder
    sin que se vea el ícono de imagen rota. */
-.restaurant-card-media img.is-loaded,
-.restaurant-detail-hero img.is-loaded {
+.restaurant-card-media img.is-loaded {
   opacity: 1;
 }
 .restaurant-card-media .restaurant-card-initials {
@@ -1145,113 +1144,130 @@ img {
   overflow-wrap: anywhere;
 }
 
-/* --- Galería hero del restaurante --- */
-.restaurant-detail-hero {
+/* --- Carrusel de fotos del restaurante (PhotoGallery) --- */
+.photo-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.photo-carousel-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 5;
-  border-radius: var(--radius-md);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(245,166,35,0.18), rgba(110,123,61,0.25));
-  flex-shrink: 0;
+  background: var(--dark-surface, var(--color-surface));
+  border: 1px solid var(--dark-border, var(--color-border));
+  touch-action: pan-y;
 }
-.restaurant-detail-hero img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0;
-  transition: opacity 250ms ease-out;
+.photo-carousel-frame:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
-/* --- Carrusel de fotos (PhotoGallery) --- */
-.photo-gallery {
-  width: 100%;
-  margin-bottom: 24px;
+.photo-carousel-frame.skeleton-block {
+  border-radius: var(--radius-lg);
 }
-.photo-gallery-track {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 6;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  background: var(--color-border);
+.photo-carousel-loading {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
 }
-.photo-gallery-img {
+.photo-carousel-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
+  transition: opacity 400ms ease-out;
+  user-select: none;
 }
-.photo-gallery-img.active {
+.photo-carousel-img.is-active {
   opacity: 1;
-  pointer-events: auto;
 }
-.photo-gallery-btn {
+.photo-carousel-btn {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-  transition: background 0.2s;
-}
-.photo-gallery-btn:hover {
-  background: rgba(0, 0, 0, 0.65);
-}
-.photo-gallery-btn-prev { left: 10px; }
-.photo-gallery-btn-next { right: 10px; }
-.photo-gallery-counter {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  background: rgba(0, 0, 0, 0.5);
+  width: 42px;
+  height: 42px;
+  padding: 0 0 3px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(20, 10, 18, 0.55);
   color: #fff;
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 99px;
-  z-index: 2;
+  font-size: 28px;
+  line-height: 1;
+  backdrop-filter: blur(4px);
+  transition: background 150ms ease-out;
 }
-.photo-gallery-dots {
+.photo-carousel-btn:hover {
+  background: rgba(20, 10, 18, 0.8);
+}
+.photo-carousel-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+.photo-carousel-btn-prev {
+  left: 12px;
+}
+.photo-carousel-btn-next {
+  right: 12px;
+}
+.photo-carousel-counter {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(20, 10, 18, 0.65);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.photo-carousel-dots {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  margin-top: 8px;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px;
+  scrollbar-width: thin;
 }
-.photo-gallery-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-border);
-  border: none;
-  cursor: pointer;
+.photo-carousel-dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
   padding: 0;
-  transition: background 0.2s, transform 0.2s;
+  border: none;
+  border-radius: 50%;
+  background: rgba(245, 238, 240, 0.28);
+  transition: background 200ms ease-out, transform 200ms ease-out;
 }
-.photo-gallery-dot.active {
+.photo-carousel-dot.is-active {
   background: var(--color-primary);
-  transform: scale(1.25);
+  transform: scale(1.3);
 }
-
+.photo-carousel-dot:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
 @media (max-width: 640px) {
-  .restaurant-detail-hero {
-    aspect-ratio: 16 / 7;
+  .photo-carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
   }
-  .photo-gallery-track {
-    aspect-ratio: 16 / 8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-carousel-img,
+  .photo-carousel-dot {
+    transition: none;
   }
 }
 
