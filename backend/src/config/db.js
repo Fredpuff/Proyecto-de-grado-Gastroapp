@@ -11,6 +11,10 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
   decimalNumbers: true,
+  // TiDB guarda NOW()/CURRENT_TIMESTAMP en UTC; sin esto mysql2 los lee como
+  // hora local (Colombia, -05:00) y todas las fechas salen corridas 5 horas
+  // (una reseña recién publicada quedaba "en el futuro").
+  timezone: 'Z',
   ssl: {
     minVersion: 'TLSv1.2',
     rejectUnauthorized: true
