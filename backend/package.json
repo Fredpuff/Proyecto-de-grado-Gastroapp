@@ -11,7 +11,8 @@
     "collect-data": "node scripts/collectRestaurantData.js",
     "collect-data:places": "node scripts/collectRestaurantData.js --dry-run",
     "seed-test-reviews": "node scripts/seedTestReviews.js",
-    "nlp:backfill": "node scripts/analyzeExistingReviews.js"
+    "nlp:backfill": "node scripts/analyzeExistingReviews.js",
+    "photos:warm": "node scripts/warmPhotos.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
