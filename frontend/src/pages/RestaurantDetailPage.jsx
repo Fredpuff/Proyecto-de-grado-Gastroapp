@@ -11,7 +11,8 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import RatingSummary from '../components/RatingSummary';
 import PhotoGallery from '../components/PhotoGallery';
-import RestaurantImagePlaceholder from '../components/RestaurantImagePlaceholder';
+
+const SHOW_DIGITAL_MENU = false; // Menú digital oculto temporalmente, se retomará después
 
 const ANALYSIS_POLL_MS = 4000;
 const ANALYSIS_POLL_MAX_ATTEMPTS = 5;
@@ -36,8 +37,6 @@ export default function RestaurantDetailPage() {
   const [reviewSort, setReviewSort] = useState('recientes');
   const [ratingFilter, setRatingFilter] = useState(0);
   const [galleryPhotos, setGalleryPhotos] = useState(null);
-  const [heroImgFailed, setHeroImgFailed] = useState(false);
-  const [heroImgLoaded, setHeroImgLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newReviewId, setNewReviewId] = useState(null);
@@ -113,15 +112,14 @@ export default function RestaurantDetailPage() {
     setLoading(true);
     setError('');
     setAnalyzingReviewId(null);
-    setHeroImgFailed(false);
-    setHeroImgLoaded(false);
     setGalleryPhotos(null);
     setAspects([]);
     setReviewSort('recientes');
     setRatingFilter(0);
     Promise.all([
       restaurantsApi.get(id),
-      menuApi.listByRestaurant(id),
+      // Con el menú oculto no se piden datos que no se muestran.
+      SHOW_DIGITAL_MENU ? menuApi.listByRestaurant(id) : Promise.resolve([]),
       reviewsApi.listByRestaurant(id),
       restaurantsApi.nearbyParkings(id, 2),
       fetchAspects(id),
@@ -133,7 +131,10 @@ export default function RestaurantDetailPage() {
         setReviews(rv);
         setNearbyParkings(p);
         setAspects(asp);
-        setGalleryPhotos((ph?.photos ?? []).map(photoUrls.fromApiPath));
+        // Sin fotos de galería se intenta la foto principal (p. ej. una URL
+        // manual del admin); si tampoco existe, el carrusel muestra el placeholder.
+        const gallery = (ph?.photos ?? []).map(photoUrls.fromApiPath);
+        setGalleryPhotos(gallery.length > 0 ? gallery : [photoUrls.main(r.id)]);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -150,23 +151,6 @@ export default function RestaurantDetailPage() {
     );
   if (!restaurant) return null;
 
-  // Foto principal por el proxy del backend; si falla, placeholder del tema.
-  const hero = (
-    <div className="restaurant-detail-hero">
-      {heroImgFailed ? (
-        <RestaurantImagePlaceholder cuisine={restaurant.cuisine_type} iconSize={44} />
-      ) : (
-        <img
-          src={photoUrls.main(restaurant.id)}
-          alt={restaurant.name}
-          className={heroImgLoaded ? 'is-loaded' : undefined}
-          onLoad={() => setHeroImgLoaded(true)}
-          onError={() => setHeroImgFailed(true)}
-        />
-      )}
-    </div>
-  );
-
   const groupedMenu = menu.reduce((acc, item) => {
     acc[item.category] = acc[item.category] || [];
     acc[item.category].push(item);
@@ -179,12 +163,6 @@ export default function RestaurantDetailPage() {
         <Link to="/" className="muted detail-back-link">
           ← Volver a la búsqueda
         </Link>
-
-        {galleryPhotos && galleryPhotos.length > 0 ? (
-          <PhotoGallery photos={galleryPhotos} altPrefix={restaurant.name} fallback={hero} />
-        ) : (
-          hero
-        )}
 
       <div>
         <div className="detail-header-row">
@@ -212,26 +190,35 @@ export default function RestaurantDetailPage() {
 
       <div className="detail-grid">
         <div className="detail-main-col">
-          <section>
-            <h2>Menú digital</h2>
-            {menu.length === 0 && <p className="muted">Este restaurante aún no ha publicado su menú.</p>}
-            {Object.entries(groupedMenu).map(([category, items]) => (
-              <div key={category} className="menu-category">
-                <h4 className="menu-category-title">{category}</h4>
-                <div className="menu-items">
-                  {items.map((item) => (
-                    <div key={item.id} className="menu-item-row">
-                      <div>
-                        <strong>{item.name}</strong>
-                        {item.description && <p className="muted menu-item-desc">{item.description}</p>}
+          <PhotoGallery
+            key={restaurant.id}
+            photos={galleryPhotos}
+            altPrefix={restaurant.name}
+            cuisine={restaurant.cuisine_type}
+          />
+
+          {SHOW_DIGITAL_MENU && (
+            <section>
+              <h2>Menú digital</h2>
+              {menu.length === 0 && <p className="muted">Este restaurante aún no ha publicado su menú.</p>}
+              {Object.entries(groupedMenu).map(([category, items]) => (
+                <div key={category} className="menu-category">
+                  <h4 className="menu-category-title">{category}</h4>
+                  <div className="menu-items">
+                    {items.map((item) => (
+                      <div key={item.id} className="menu-item-row">
+                        <div>
+                          <strong>{item.name}</strong>
+                          {item.description && <p className="muted menu-item-desc">{item.description}</p>}
+                        </div>
+                        <strong className="menu-item-price">${Number(item.price).toLocaleString('es-CO')}</strong>
                       </div>
-                      <strong className="menu-item-price">${Number(item.price).toLocaleString('es-CO')}</strong>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </section>
+              ))}
+            </section>
+          )}
         </div>
 
         <aside className="detail-aside">
@@ -340,19 +327,7 @@ function RestaurantDetailSkeleton() {
 
       <div className="detail-grid">
         <div className="detail-main-col">
-          <section>
-            <div className="skeleton-line" style={{ width: 140, height: 20, marginBottom: 16 }} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="skeleton-line" style={{ width: `${85 - i * 8}%` }} />
-              ))}
-            </div>
-          </section>
-
-          <section>
-            <div className="skeleton-line" style={{ width: 120, height: 20, marginBottom: 16 }} />
-            <div className="skeleton-block" style={{ height: 90 }} />
-          </section>
+          <div className="photo-carousel-frame skeleton-block" />
         </div>
 
         <aside className="detail-aside">
