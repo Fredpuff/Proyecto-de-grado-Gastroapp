@@ -1,44 +1,110 @@
-export default function RatingSummary({ ratingAvg, totalCount, breakdown }) {
-  const maxCount = Math.max(...breakdown.map((b) => b.count), 1);
+import StarRating from './StarRating';
+
+// Nombres amigables de los aspectos que detecta el análisis de reseñas.
+const ASPECT_NAMES = {
+  comida: 'la comida',
+  servicio: 'el servicio',
+  ambiente: 'el ambiente',
+  precio: 'el precio',
+  limpieza: 'la limpieza',
+  parqueadero: 'el parqueadero',
+  tiempo_espera: 'el tiempo de espera'
+};
+
+function joinNames(list) {
+  const names = list.map((a) => ASPECT_NAMES[a.aspect] || a.aspect);
+  if (names.length <= 1) return names.join('');
+  return `${names.slice(0, -1).join(', ')} y ${names[names.length - 1]}`;
+}
+
+// Lo que más gusta / lo que menos, a partir de los aspectos ya analizados.
+function buildHighlights(aspects = []) {
+  const liked = aspects
+    .filter((a) => a.mentions > 0 && a.positive > a.negative && a.score > 0.15)
+    .sort((a, b) => b.positive - a.positive || b.score - a.score)
+    .slice(0, 3);
+  const disliked = aspects
+    .filter((a) => a.mentions > 0 && a.negative >= a.positive && a.score < -0.15)
+    .sort((a, b) => b.negative - a.negative || a.score - b.score)
+    .slice(0, 2);
+  return { liked, disliked };
+}
+
+// Calcula promedio, conteo y distribución desde la lista de reseñas que ya
+// tiene la página: así todo se actualiza al instante al publicar una nueva.
+export function summarizeReviews(reviews) {
+  const breakdown = [5, 4, 3, 2, 1].map((rating) => ({
+    rating,
+    count: reviews.filter((r) => Number(r.rating) === rating).length
+  }));
+  const totalCount = reviews.length;
+  const sum = reviews.reduce((s, r) => s + Number(r.rating), 0);
+  const ratingAvg = totalCount ? sum / totalCount : 0;
+  return { ratingAvg, totalCount, breakdown };
+}
+
+export default function RatingSummary({ reviews, aspects, selectedRating, onSelectRating }) {
+  const { ratingAvg, totalCount, breakdown } = summarizeReviews(reviews);
+  const { liked, disliked } = buildHighlights(aspects);
+
+  if (totalCount === 0) {
+    return (
+      <div className="rating-summary rating-summary-empty">
+        <StarRating value={0} size={22} showValue={false} />
+        <p className="muted">Aún no hay calificaciones. ¡Sé el primero en opinar!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="rating-summary">
-      <div className="rating-summary-left">
-        <span className="rating-summary-number">{Number(ratingAvg).toFixed(1)}</span>
-        <span className="rating-summary-stars" aria-hidden="true">
-          {[1, 2, 3, 4, 5].map((s) => {
-            const rounded = Math.round(ratingAvg * 2) / 2;
-            const filled = s <= rounded;
-            const half = !filled && s - 0.5 === rounded;
-            return (
-              <span
-                key={s}
-                style={{ color: filled || half ? 'var(--color-accent)' : 'var(--star-empty-color, rgba(245,238,240,0.28))' }}
-              >
-                ★
-              </span>
-            );
-          })}
-        </span>
-        <span className="rating-summary-count muted">
-          {totalCount} {totalCount === 1 ? 'calificación' : 'calificaciones'}
-        </span>
+      <div className="rating-summary-top">
+        <span className="rating-summary-number">{ratingAvg.toFixed(1)}</span>
+        <div className="rating-summary-top-right">
+          <StarRating value={ratingAvg} size={20} showValue={false} />
+          <span className="rating-summary-count muted">
+            {totalCount} {totalCount === 1 ? 'calificación' : 'calificaciones'}
+          </span>
+        </div>
       </div>
 
       <div className="rating-summary-bars">
-        {breakdown.map(({ rating, count }) => (
-          <div key={rating} className="rating-bar-row">
-            <span className="rating-bar-label">{rating}★</span>
-            <div className="rating-bar-track">
-              <div
-                className="rating-bar-fill"
-                style={{ width: `${totalCount > 0 ? (count / maxCount) * 100 : 0}%` }}
-              />
-            </div>
-            <span className="rating-bar-count muted">{count}</span>
-          </div>
-        ))}
+        {breakdown.map(({ rating, count }) => {
+          const active = selectedRating === rating;
+          return (
+            <button
+              key={rating}
+              type="button"
+              className={active ? 'rating-bar-row rating-bar-row-active' : 'rating-bar-row'}
+              onClick={() => onSelectRating?.(active ? 0 : rating)}
+              disabled={count === 0}
+              aria-pressed={active}
+              aria-label={`Ver opiniones de ${rating} ${rating === 1 ? 'estrella' : 'estrellas'} (${count})`}
+            >
+              <span className="rating-bar-label">{rating} ★</span>
+              <span className="rating-bar-track">
+                <span className="rating-bar-fill" style={{ width: `${(count / totalCount) * 100}%` }} />
+              </span>
+              <span className="rating-bar-count">{count}</span>
+            </button>
+          );
+        })}
       </div>
+
+      {(liked.length > 0 || disliked.length > 0) && (
+        <div className="rating-highlights">
+          {liked.length > 0 && (
+            <p>
+              <span aria-hidden="true">👍</span> <strong>Lo que más gusta:</strong> {joinNames(liked)}
+            </p>
+          )}
+          {disliked.length > 0 && (
+            <p>
+              <span aria-hidden="true">👎</span> <strong>A mejorar:</strong> {joinNames(disliked)}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

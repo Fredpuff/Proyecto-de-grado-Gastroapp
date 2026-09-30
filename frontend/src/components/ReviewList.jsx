@@ -1,40 +1,111 @@
 import StarRating from './StarRating';
 
-const SENTIMENT_LABELS = { positivo: 'Positiva', neutral: 'Neutral', negativo: 'Negativa', mixto: 'Mixta' };
+// Etiqueta amigable según cómo le fue al cliente (sale del análisis de la
+// reseña o, si no hay texto, de sus estrellas).
+const EXPERIENCE_LABELS = {
+  positivo: 'Buena experiencia',
+  negativo: 'Mala experiencia',
+  neutral: 'Experiencia regular',
+  mixto: 'Experiencia regular'
+};
 
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' });
+const SORTERS = {
+  recientes: (a, b) => new Date(b.created_at) - new Date(a.created_at),
+  mejores: (a, b) => b.rating - a.rating || new Date(b.created_at) - new Date(a.created_at),
+  peores: (a, b) => a.rating - b.rating || new Date(b.created_at) - new Date(a.created_at)
+};
+
+const TIME_UNITS = [
+  ['year', 365 * 24 * 3600],
+  ['month', 30 * 24 * 3600],
+  ['week', 7 * 24 * 3600],
+  ['day', 24 * 3600],
+  ['hour', 3600],
+  ['minute', 60]
+];
+const relativeFormat = new Intl.RelativeTimeFormat('es', { numeric: 'auto' });
+
+// "Hace 2 semanas", "Ayer", "Hace un momento"...
+function formatRelative(iso) {
+  const seconds = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (!Number.isFinite(seconds)) return '';
+  if (seconds < 60) return 'Hace un momento';
+  for (const [unit, size] of TIME_UNITS) {
+    if (seconds >= size) {
+      const text = relativeFormat.format(-Math.floor(seconds / size), unit);
+      return text.charAt(0).toUpperCase() + text.slice(1);
+    }
+  }
+  return 'Hace un momento';
 }
 
-export default function ReviewList({ reviews, newReviewId }) {
-  if (reviews.length === 0) {
-    return <p className="muted">Todavía no hay reseñas. ¡Sé el primero en opinar!</p>;
-  }
+function formatFullDate(iso) {
+  return new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+export default function ReviewList({ reviews, newReviewId, sort, onSortChange, ratingFilter, onRatingFilterChange }) {
+  const visible = reviews
+    .filter((r) => !ratingFilter || Number(r.rating) === ratingFilter)
+    .sort(SORTERS[sort] || SORTERS.recientes);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      {reviews.map((r) => (
-        <div
-          key={r.id}
-          className={r.id === newReviewId ? 'card review-item-enter' : 'card'}
-          style={{ padding: 14 }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <span>
-              <strong>{r.user_name}</strong>
-              {r.sentiment && (
-                <span className="review-sentiment-tag" data-sentiment={r.sentiment}>
-                  {SENTIMENT_LABELS[r.sentiment] || r.sentiment}
-                </span>
-              )}
-            </span>
-            <span className="muted" style={{ fontSize: 12.5 }}>
-              {formatDate(r.created_at)}
-            </span>
-          </div>
-          <StarRating value={r.rating} showValue={false} />
-          {r.comment && <p style={{ marginTop: 8, marginBottom: 0 }}>{r.comment}</p>}
+    <div className="review-list">
+      {reviews.length > 0 && (
+        <div className="review-filters">
+          <label className="review-filter">
+            <span>Ordenar</span>
+            <select value={sort} onChange={(e) => onSortChange(e.target.value)}>
+              <option value="recientes">Más recientes</option>
+              <option value="mejores">Mejor calificadas</option>
+              <option value="peores">Peor calificadas</option>
+            </select>
+          </label>
+          <label className="review-filter">
+            <span>Calificación</span>
+            <select value={ratingFilter} onChange={(e) => onRatingFilterChange(Number(e.target.value))}>
+              <option value={0}>Todas</option>
+              {[5, 4, 3, 2, 1].map((n) => (
+                <option key={n} value={n}>
+                  {'★'.repeat(n)} ({n})
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
+      )}
+
+      {reviews.length === 0 && <p className="muted">Todavía no hay opiniones. ¡Sé el primero en contar cómo te fue!</p>}
+
+      {reviews.length > 0 && visible.length === 0 && (
+        <p className="muted">
+          No hay opiniones con {ratingFilter} {ratingFilter === 1 ? 'estrella' : 'estrellas'}.{' '}
+          <button type="button" className="link-button" onClick={() => onRatingFilterChange(0)}>
+            Ver todas
+          </button>
+        </p>
+      )}
+
+      {visible.map((r) => (
+        <article key={r.id} className={r.id === newReviewId ? 'review-item review-item-enter' : 'review-item'}>
+          <div className="review-item-head">
+            <StarRating value={Number(r.rating)} size={15} showValue={false} />
+            {r.sentiment && EXPERIENCE_LABELS[r.sentiment] && (
+              <span className="review-experience-tag" data-sentiment={r.sentiment}>
+                {EXPERIENCE_LABELS[r.sentiment]}
+              </span>
+            )}
+          </div>
+          <p className="review-item-meta">
+            <strong>{r.user_name}</strong>
+            <span className="muted">
+              {' · '}
+              <time dateTime={r.created_at} title={formatFullDate(r.created_at)}>
+                {formatRelative(r.created_at)}
+              </time>
+            </span>
+          </p>
+          {r.comment && <p className="review-item-text">{r.comment}</p>}
+        </article>
       ))}
     </div>
   );

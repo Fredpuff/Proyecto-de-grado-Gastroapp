@@ -8,9 +8,25 @@ export default function StarRating({ value = 0, size = 16, showValue = true }) {
         {stars.map((s) => {
           const filled = s <= rounded;
           const half = !filled && s - 0.5 === rounded;
+          if (half) {
+            // Media estrella: mitad izquierda con color, mitad derecha vacía.
+            return (
+              <span
+                key={s}
+                style={{
+                  background: 'linear-gradient(90deg, var(--color-accent) 50%, var(--star-empty-color, #dcd2c0) 50%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent'
+                }}
+              >
+                ★
+              </span>
+            );
+          }
           return (
-            <span key={s} style={{ color: filled || half ? 'var(--color-accent)' : 'var(--star-empty-color, #dcd2c0)' }}>
-              {half ? '★' : filled ? '★' : '☆'}
+            <span key={s} style={{ color: filled ? 'var(--color-accent)' : 'var(--star-empty-color, #dcd2c0)' }}>
+              {filled ? '★' : '☆'}
             </span>
           );
         })}

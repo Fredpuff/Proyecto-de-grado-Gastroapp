@@ -9,12 +9,19 @@ import PriceIndicator from '../components/PriceIndicator';
 import RestaurantMap from '../components/RestaurantMap';
 import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
-import ReviewInsights from '../components/ReviewInsights';
 import RatingSummary from '../components/RatingSummary';
 import PhotoGallery from '../components/PhotoGallery';
 
 const ANALYSIS_POLL_MS = 4000;
 const ANALYSIS_POLL_MAX_ATTEMPTS = 5;
+
+// Aspectos para "Lo que más gusta / A mejorar"; si falla, simplemente no se muestran.
+function fetchAspects(id) {
+  return reviewsApi
+    .insights(id)
+    .then((ins) => ins?.aspects ?? [])
+    .catch(() => []);
+}
 
 export default function RestaurantDetailPage() {
   const { id } = useParams();
@@ -24,14 +31,15 @@ export default function RestaurantDetailPage() {
   const [menu, setMenu] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [nearbyParkings, setNearbyParkings] = useState([]);
-  const [ratingSummaryData, setRatingSummaryData] = useState(null);
+  const [aspects, setAspects] = useState([]);
+  const [reviewSort, setReviewSort] = useState('recientes');
+  const [ratingFilter, setRatingFilter] = useState(0);
   const [galleryPhotos, setGalleryPhotos] = useState(null);
   const [heroImgFailed, setHeroImgFailed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newReviewId, setNewReviewId] = useState(null);
   const [analyzingReviewId, setAnalyzingReviewId] = useState(null);
-  const [insightsRefreshKey, setInsightsRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!newReviewId) return undefined;
@@ -39,10 +47,11 @@ export default function RestaurantDetailPage() {
     return () => clearTimeout(timer);
   }, [newReviewId]);
 
-  // Polling corto tras crear una reseña: refresca lista, rating y análisis
-  // cada ANALYSIS_POLL_MS hasta que la reseña tenga sentimiento (más una
-  // vuelta extra, porque los agregados del restaurante se recalculan justo
-  // después) o se agoten los intentos (reseña omitida o análisis fallido).
+  // Polling corto tras crear una reseña: la reseña ya se ve (con su etiqueta
+  // por estrellas); esto solo recoge la etiqueta afinada por el análisis del
+  // texto y el "Lo que más gusta" actualizado. Para cuando la reseña deja de
+  // estar 'pending' (más una vuelta extra, porque los agregados del
+  // restaurante se recalculan justo después) o se agotan los intentos.
   useEffect(() => {
     if (!analyzingReviewId) return undefined;
     let cancelled = false;
@@ -53,13 +62,13 @@ export default function RestaurantDetailPage() {
     async function tick() {
       attempts += 1;
       try {
-        const [rv, r] = await Promise.all([reviewsApi.listByRestaurant(id), restaurantsApi.get(id)]);
+        const [rv, asp] = await Promise.all([reviewsApi.listByRestaurant(id), fetchAspects(id)]);
         if (cancelled) return;
         setReviews(rv);
-        setRestaurant(r);
-        setInsightsRefreshKey((k) => k + 1);
+        setAspects(asp);
         const wasAnalyzed = analyzed;
-        analyzed = !!rv.find((x) => x.id === analyzingReviewId)?.sentiment;
+        const status = rv.find((x) => x.id === analyzingReviewId)?.analysis_status;
+        analyzed = !!status && status !== 'pending';
         if (wasAnalyzed) {
           setAnalyzingReviewId(null);
           return;
@@ -81,19 +90,20 @@ export default function RestaurantDetailPage() {
     };
   }, [analyzingReviewId, id]);
 
+  // El promedio, el conteo y las barras salen de `reviews`, así que agregar la
+  // reseña aquí los actualiza al instante; los filtros se limpian para que la
+  // nueva quede visible arriba de la lista.
   async function handleReviewCreated(review) {
     setReviews((prev) => [review, ...prev.filter((x) => x.id !== review.id)]);
+    setReviewSort('recientes');
+    setRatingFilter(0);
     setNewReviewId(review.id);
     setAnalyzingReviewId(review.id);
     try {
-      const [r, rs] = await Promise.all([
-        restaurantsApi.get(id),
-        restaurantsApi.ratingSummary(id).catch(() => null)
-      ]);
-      setRestaurant(r);
-      if (rs) setRatingSummaryData(rs);
+      // rating_avg del encabezado (combina Google + GSI) se recalcula al guardar
+      setRestaurant(await restaurantsApi.get(id));
     } catch {
-      // no crítico: el polling lo vuelve a intentar
+      // no crítico
     }
   }
 
@@ -103,20 +113,23 @@ export default function RestaurantDetailPage() {
     setAnalyzingReviewId(null);
     setHeroImgFailed(false);
     setGalleryPhotos(null);
+    setAspects([]);
+    setReviewSort('recientes');
+    setRatingFilter(0);
     Promise.all([
       restaurantsApi.get(id),
       menuApi.listByRestaurant(id),
       reviewsApi.listByRestaurant(id),
       restaurantsApi.nearbyParkings(id, 2),
-      restaurantsApi.ratingSummary(id).catch(() => null),
+      fetchAspects(id),
       restaurantsApi.photos(id).catch(() => null)
     ])
-      .then(([r, m, rv, p, rs, ph]) => {
+      .then(([r, m, rv, p, asp, ph]) => {
         setRestaurant(r);
         setMenu(m);
         setReviews(rv);
         setNearbyParkings(p);
-        setRatingSummaryData(rs);
+        setAspects(asp);
         setGalleryPhotos(ph?.photos ?? []);
       })
       .catch((err) => setError(err.message))
@@ -208,33 +221,9 @@ export default function RestaurantDetailPage() {
               </div>
             ))}
           </section>
-
-          <ReviewInsights restaurantId={id} refreshKey={insightsRefreshKey} />
-
-          <section>
-            <h2>Reseñas ({reviews.length})</h2>
-            <div className="reviews-list">
-              {user ? (
-                <ReviewForm restaurantId={id} onCreated={handleReviewCreated} />
-              ) : (
-                <p className="muted">
-                  <Link to="/login">Inicia sesión</Link> para dejar tu reseña.
-                </p>
-              )}
-              <ReviewList reviews={reviews} newReviewId={newReviewId} />
-            </div>
-          </section>
         </div>
 
         <aside className="detail-aside">
-          {ratingSummaryData && (
-            <RatingSummary
-              ratingAvg={ratingSummaryData.ratingAvg}
-              totalCount={ratingSummaryData.totalCount}
-              breakdown={ratingSummaryData.breakdown}
-            />
-          )}
-
           <div className="card info-card">
             <h4>Información</h4>
             <p className="info-row">
@@ -272,6 +261,46 @@ export default function RestaurantDetailPage() {
           </div>
         </aside>
       </div>
+
+      <section className="reviews-section" id="opiniones">
+        <div className="reviews-section-summary">
+          <h2>Calificaciones</h2>
+          <RatingSummary
+            reviews={reviews}
+            aspects={aspects}
+            selectedRating={ratingFilter}
+            onSelectRating={setRatingFilter}
+          />
+        </div>
+
+        <div className="reviews-section-main">
+          <div className="reviews-section-head">
+            <h2>Opiniones</h2>
+            <span className="muted">
+              {reviews.length} {reviews.length === 1 ? 'comentario' : 'comentarios'}
+            </span>
+          </div>
+
+          {user ? (
+            <ReviewForm restaurantId={id} onCreated={handleReviewCreated} />
+          ) : (
+            <div className="card review-login-prompt">
+              <p>
+                ¿Ya visitaste este lugar? <Link to="/login">Inicia sesión</Link> para dejar tu opinión.
+              </p>
+            </div>
+          )}
+
+          <ReviewList
+            reviews={reviews}
+            newReviewId={newReviewId}
+            sort={reviewSort}
+            onSortChange={setReviewSort}
+            ratingFilter={ratingFilter}
+            onRatingFilterChange={setRatingFilter}
+          />
+        </div>
+      </section>
       </div>
     </div>
   );
