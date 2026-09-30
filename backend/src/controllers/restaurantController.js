@@ -1,5 +1,7 @@
 const pool = require('../config/db');
 const { haversineDistanceKm } = require('../utils/haversine');
+const { toPublicRestaurant } = require('../utils/publicRestaurant');
+const photoProxy = require('../services/photoProxy.service');
 
 const NEIGHBORHOODS = ['Centro Histórico', 'Barzal', 'La Rosita', 'Villacentro'];
 const PRICE_RANGES = ['$', '$$', '$$$', '$$$$'];
@@ -48,7 +50,7 @@ async function list(req, res, next) {
       params
     );
 
-    res.json(rows);
+    res.json(rows.map(toPublicRestaurant));
   } catch (err) {
     next(err);
   }
@@ -61,7 +63,7 @@ async function getById(req, res, next) {
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Restaurante no encontrado' });
     }
-    res.json(rows[0]);
+    res.json(toPublicRestaurant(rows[0]));
   } catch (err) {
     next(err);
   }
@@ -119,7 +121,7 @@ async function create(req, res, next) {
     );
 
     const [rows] = await pool.query('SELECT * FROM restaurants WHERE id = ?', [result.insertId]);
-    res.status(201).json(rows[0]);
+    res.status(201).json(toPublicRestaurant(rows[0]));
   } catch (err) {
     next(err);
   }
@@ -170,7 +172,7 @@ async function update(req, res, next) {
     await pool.query(`UPDATE restaurants SET ${updates.join(', ')} WHERE id = ?`, params);
 
     const [rows] = await pool.query('SELECT * FROM restaurants WHERE id = ?', [req.params.id]);
-    res.json(rows[0]);
+    res.json(toPublicRestaurant(rows[0]));
   } catch (err) {
     next(err);
   }
@@ -221,68 +223,67 @@ async function nearbyParkings(req, res, next) {
   }
 }
 
+const PHOTO_CACHE_CONTROL = 'public, max-age=2592000';
+
+function sendPhoto(res, result) {
+  if (result.redirect) return res.redirect(302, result.redirect);
+  if (result.notFound) return res.status(404).json({ message: 'Foto no disponible' });
+  res.set('Cache-Control', PHOTO_CACHE_CONTROL);
+  res.set('X-Photo-Cache', result.cache);
+  res.type(result.contentType);
+  return res.sendFile(result.file);
+}
+
+function parseRestaurantId(req, res) {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    res.status(400).json({ message: 'id inválido' });
+    return null;
+  }
+  return id;
+}
+
 // GET /api/restaurants/:id/photos
-// Devuelve hasta 10 URLs de fotos de Google Places, usando caché de 30 días.
-// Si el restaurante no tiene google_place_id, retorna arreglo vacío (sin error).
+// Rutas propias de hasta 10 fotos (/api/restaurants/:id/photos/0, /1...). Los
+// nombres de las fotos se cachean 30 días en restaurant_photos_cache; si el
+// restaurante no tiene google_place_id o Google falla, devuelve [] sin error.
 async function getPhotos(req, res, next) {
   try {
-    const restaurantId = Number(req.params.id);
-    const [restRows] = await pool.query(
-      'SELECT google_place_id FROM restaurants WHERE id = ?',
-      [restaurantId]
-    );
-    if (restRows.length === 0) return res.status(404).json({ message: 'Restaurante no encontrado' });
-
-    const { google_place_id } = restRows[0];
-    if (!google_place_id) return res.json({ photos: [] });
-
-    const CACHE_DAYS = 30;
-    const [cacheRows] = await pool.query(
-      'SELECT photo_names, updated_at FROM restaurant_photos_cache WHERE restaurant_id = ?',
-      [restaurantId]
-    );
-
-    if (cacheRows.length > 0) {
-      const ageDays = (Date.now() - new Date(cacheRows[0].updated_at).getTime()) / 86400000;
-      if (ageDays < CACHE_DAYS) {
-        const names = typeof cacheRows[0].photo_names === 'string'
-          ? JSON.parse(cacheRows[0].photo_names) : cacheRows[0].photo_names;
-        return res.json({ photos: buildPhotoUrls(names) });
-      }
-    }
-
-    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-    const apiRes = await fetch(
-      `https://places.googleapis.com/v1/places/${google_place_id}?fields=photos&key=${apiKey}`
-    );
-    if (!apiRes.ok) {
-      if (cacheRows.length > 0) {
-        const names = typeof cacheRows[0].photo_names === 'string'
-          ? JSON.parse(cacheRows[0].photo_names) : cacheRows[0].photo_names;
-        return res.json({ photos: buildPhotoUrls(names) });
-      }
-      return res.json({ photos: [] });
-    }
-
-    const data = await apiRes.json();
-    const photoNames = (data.photos || []).map((p) => p.name);
-
-    await pool.query(
-      `INSERT INTO restaurant_photos_cache (restaurant_id, photo_names, updated_at)
-       VALUES (?, ?, NOW())
-       ON DUPLICATE KEY UPDATE photo_names = VALUES(photo_names), updated_at = NOW()`,
-      [restaurantId, JSON.stringify(photoNames)]
-    );
-
-    res.json({ photos: buildPhotoUrls(photoNames) });
+    const id = parseRestaurantId(req, res);
+    if (id === null) return;
+    const photos = await photoProxy.getGalleryPaths(id);
+    if (photos === null) return res.status(404).json({ message: 'Restaurante no encontrado' });
+    res.json({ photos });
   } catch (err) {
     next(err);
   }
 }
 
-function buildPhotoUrls(names) {
-  const key = process.env.GOOGLE_PLACES_PHOTO_KEY || process.env.GOOGLE_PLACES_API_KEY;
-  return names.map((n) => `https://places.googleapis.com/v1/${n}/media?maxWidthPx=800&key=${key}`);
+// GET /api/restaurants/:id/photos/:index — foto de la galería (caché en disco)
+async function getPhotoByIndex(req, res, next) {
+  try {
+    const id = parseRestaurantId(req, res);
+    if (id === null) return;
+    const index = Number(req.params.index);
+    if (!Number.isInteger(index) || index < 0 || index >= photoProxy.MAX_PHOTOS) {
+      return res.status(404).json({ message: 'Foto no disponible' });
+    }
+    sendPhoto(res, await photoProxy.getPhoto(id, index));
+  } catch (err) {
+    next(err);
+  }
+}
+
+// GET /api/restaurants/:id/image — foto principal (caché en disco, o
+// redirección si el admin puso una URL externa manual)
+async function getMainImage(req, res, next) {
+  try {
+    const id = parseRestaurantId(req, res);
+    if (id === null) return;
+    sendPhoto(res, await photoProxy.getMainImage(id));
+  } catch (err) {
+    next(err);
+  }
 }
 
 // GET /api/restaurants/:id/rating-summary
@@ -308,4 +309,7 @@ async function ratingSummary(req, res, next) {
   }
 }
 
-module.exports = { list, getById, create, update, remove, nearbyParkings, ratingSummary, getPhotos, NEIGHBORHOODS, PRICE_RANGES };
+module.exports = {
+  list, getById, create, update, remove, nearbyParkings, ratingSummary, getPhotos, getPhotoByIndex, getMainImage,
+  NEIGHBORHOODS, PRICE_RANGES
+};

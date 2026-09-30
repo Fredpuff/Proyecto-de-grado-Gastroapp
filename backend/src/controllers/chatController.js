@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const { NEIGHBORHOODS } = require('./restaurantController');
+const { toPublicRestaurant } = require('../utils/publicRestaurant');
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_MODEL = 'claude-sonnet-5';
@@ -240,7 +241,7 @@ function fallbackResponse(candidates) {
     message:
       'No pude generar una recomendación personalizada en este momento, pero aquí tienes ' +
       'algunas opciones bien valoradas que podrían interesarte:',
-    recommendations: candidates.slice(0, 3).map((c) => ({ ...c, reason: '' }))
+    recommendations: candidates.slice(0, 3).map((c) => ({ ...toPublicRestaurant(c), reason: '' }))
   };
 }
 
@@ -294,7 +295,7 @@ async function recommend(req, res, next) {
       .filter((r) => byId.has(Number(r.restaurant_id)))
       .slice(0, 3)
       .map((r) => ({
-        ...byId.get(Number(r.restaurant_id)),
+        ...toPublicRestaurant(byId.get(Number(r.restaurant_id))),
         reason: typeof r.reason === 'string' ? r.reason : ''
       }));
 
