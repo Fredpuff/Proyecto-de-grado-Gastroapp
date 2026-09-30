@@ -4,7 +4,8 @@ const {
   getRestaurantInsights,
   reanalyzePending,
   analyzeReviewSafe,
-  refreshRestaurantInsights
+  refreshRestaurantInsights,
+  sentimentFromRating
 } = require('../services/reviewNlp.service');
 
 // GET /api/restaurants/:restaurantId/reviews
@@ -16,7 +17,7 @@ async function listByRestaurant(req, res, next) {
     }
 
     const [rows] = await pool.query(
-      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score,
+      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score, rv.analysis_status,
               u.id AS user_id, u.name AS user_name
        FROM reviews rv
        JOIN users u ON u.id = rv.user_id
@@ -35,7 +36,8 @@ async function listByRestaurant(req, res, next) {
 // app) con la calificación de Google recolectada por collectRestaurantData.js.
 async function create(req, res, next) {
   try {
-    const { rating, comment = null } = req.body;
+    const { rating } = req.body;
+    const comment = typeof req.body.comment === 'string' && req.body.comment.trim() ? req.body.comment.trim() : null;
     const restaurantId = Number(req.params.restaurantId);
 
     // Number(rating) + Number.isInteger evita el bypass por NaN: con el
@@ -56,9 +58,12 @@ async function create(req, res, next) {
       return res.status(404).json({ message: 'Restaurante no encontrado' });
     }
 
+    // La reseña nace ya clasificada por sus estrellas, así el cliente la ve
+    // con su etiqueta al instante; el análisis de texto la afina después.
+    const initial = sentimentFromRating(ratingNum);
     const [result] = await pool.query(
-      'INSERT INTO reviews (restaurant_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',
-      [restaurantId, req.user.id, ratingNum, comment]
+      'INSERT INTO reviews (restaurant_id, user_id, rating, comment, sentiment, sentiment_score) VALUES (?, ?, ?, ?, ?, ?)',
+      [restaurantId, req.user.id, ratingNum, comment, initial.sentiment, initial.score]
     );
 
     // Análisis de sentimiento en segundo plano: sin await, no debe retrasar
@@ -78,7 +83,7 @@ async function create(req, res, next) {
     await recalculateRatingAvg(pool, restaurantId);
 
     const [rows] = await pool.query(
-      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score,
+      `SELECT rv.id, rv.rating, rv.comment, rv.created_at, rv.sentiment, rv.sentiment_score, rv.analysis_status,
               u.id AS user_id, u.name AS user_name
        FROM reviews rv JOIN users u ON u.id = rv.user_id WHERE rv.id = ?`,
       [result.insertId]

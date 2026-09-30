@@ -31,6 +31,10 @@ const TOP_KEYWORDS_LIMIT = 8;
 
 const LABEL_FALLBACK_SCORE = { positivo: 0.6, negativo: -0.6, neutral: 0, mixto: 0 };
 
+// Hasta este número de palabras el texto es "corto" ("Rico", "Lo mejor"): si
+// el modelo lo deja en neutral, mandan las estrellas.
+const SHORT_COMMENT_MAX_WORDS = 3;
+
 const ANALYSIS_SYSTEM_PROMPT = `Eres un analista de sentimiento para GSI, una app de reseñas de
 restaurantes en Villavicencio, Colombia. Analizas reseñas escritas por colombianos comunes:
 español coloquial, jerga llanera/regional, errores ortográficos, mayúsculas sueltas, emojis y
@@ -168,6 +172,19 @@ function normalizeSentiment(rawLabel, rawScore) {
   return { sentiment: 'neutral', score: 0 };
 }
 
+// Respaldo cuando no hay texto que analizar o el análisis falla: las
+// estrellas deciden (4-5 = positivo, 3 = neutral, 1-2 = negativo).
+function sentimentFromRating(rating) {
+  const r = Number(rating);
+  if (r >= 4) return { sentiment: 'positivo', score: r === 5 ? 0.8 : 0.5 };
+  if (r <= 2) return { sentiment: 'negativo', score: r === 1 ? -0.8 : -0.5 };
+  return { sentiment: 'neutral', score: 0 };
+}
+
+function countWords(str) {
+  return String(str || '').trim().split(/\s+/).filter(Boolean).length;
+}
+
 function truncateWords(str, maxWords) {
   const words = String(str || '').trim().split(/\s+/).filter(Boolean);
   return words.slice(0, maxWords).join(' ').slice(0, 255) || null;
@@ -264,16 +281,27 @@ async function fetchReviewForAnalysis(reviewId) {
   return rows[0];
 }
 
-async function saveSkipped(reviewId) {
+// Sin texto analizable la reseña se clasifica solo por sus estrellas.
+async function saveSkipped(reviewId, rating) {
+  const { sentiment, score } = sentimentFromRating(rating);
   await pool.query(
-    "UPDATE reviews SET analysis_status = 'skipped', analysis_error = NULL, analyzed_at = NOW() WHERE id = ?",
-    [reviewId]
+    `UPDATE reviews SET sentiment = ?, sentiment_score = ?, analysis_status = 'skipped',
+            analysis_error = NULL, analyzed_at = NOW()
+     WHERE id = ?`,
+    [sentiment, score, reviewId]
   );
 }
 
+// Si el análisis falla, la reseña conserva (o recibe) la clasificación por
+// estrellas para no quedar sin etiqueta; sigue en 'failed' para reintentarse.
 async function saveFailed(reviewId, error) {
   await pool.query(
-    "UPDATE reviews SET analysis_status = 'failed', analysis_error = ?, analyzed_at = NOW() WHERE id = ?",
+    `UPDATE reviews
+     SET analysis_status = 'failed', analysis_error = ?, analyzed_at = NOW(),
+         sentiment = COALESCE(sentiment, CASE WHEN rating >= 4 THEN 'positivo' WHEN rating <= 2 THEN 'negativo' ELSE 'neutral' END),
+         sentiment_score = COALESCE(sentiment_score, CASE WHEN rating = 5 THEN 0.8 WHEN rating = 4 THEN 0.5
+                                                          WHEN rating = 2 THEN -0.5 WHEN rating = 1 THEN -0.8 ELSE 0 END)
+     WHERE id = ?`,
     [truncateErrorMessage(error.message), reviewId]
   );
 }
@@ -321,7 +349,7 @@ async function analyzeReview(reviewId) {
   const review = await fetchReviewForAnalysis(reviewId);
 
   if (!review.comment || review.comment.trim().length < MIN_COMMENT_LENGTH) {
-    await saveSkipped(reviewId);
+    await saveSkipped(reviewId, review.rating);
     return { status: 'skipped' };
   }
 
@@ -337,7 +365,11 @@ async function analyzeReview(reviewId) {
   });
 
   const parsed = parseModelJson(text);
-  const { sentiment, score } = normalizeSentiment(parsed.sentimiento, parsed.puntaje);
+  let { sentiment, score } = normalizeSentiment(parsed.sentimiento, parsed.puntaje);
+  // Texto muy corto que el modelo no supo leer: mandan las estrellas.
+  if (sentiment === 'neutral' && countWords(review.comment) <= SHORT_COMMENT_MAX_WORDS) {
+    ({ sentiment, score } = sentimentFromRating(review.rating));
+  }
   const aspects = normalizeAspects(parsed.aspectos);
   const keywords = normalizeKeywords(parsed.palabras_clave, review.comment);
   const moderation = normalizeModeration(parsed.moderacion);
@@ -677,5 +709,6 @@ module.exports = {
   refreshRestaurantInsights,
   getRestaurantInsights,
   reanalyzePending,
-  refilterStoredKeywords
+  refilterStoredKeywords,
+  sentimentFromRating
 };
