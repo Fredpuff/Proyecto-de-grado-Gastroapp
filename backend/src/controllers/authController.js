@@ -5,15 +5,23 @@ const { signToken } = require('../utils/jwt');
 
 const googleClient = process.env.GOOGLE_CLIENT_ID ? new OAuth2Client(process.env.GOOGLE_CLIENT_ID) : null;
 
+// Roles que un usuario puede elegir al registrarse.
+// No incluyas aquí roles con acceso total a la plataforma.
+const SELF_ASSIGNABLE_ROLES = ['cliente', 'admin'];
+
+function resolveRole(requestedRole) {
+  return SELF_ASSIGNABLE_ROLES.includes(requestedRole) ? requestedRole : 'cliente';
+}
+
 async function register(req, res, next) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'name, email y password son obligatorios' });
     }
 
-    const finalRole = 'cliente';
+    const finalRole = resolveRole(role);
 
     const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
@@ -77,7 +85,7 @@ async function googleLogin(req, res, next) {
       });
     }
 
-    const { credential } = req.body;
+    const { credential, role } = req.body;
     if (!credential) {
       return res.status(400).json({ message: 'credential es obligatorio' });
     }
@@ -108,15 +116,17 @@ async function googleLogin(req, res, next) {
     let dbUser = rows[0];
 
     if (!dbUser) {
+      // El rol solo se aplica al crear la cuenta; un usuario existente conserva el suyo.
+      const newRole = resolveRole(role);
       const [result] = await pool.query(
         'INSERT INTO users (name, email, password_hash, role, google_id, avatar_url, auth_provider) VALUES (?, ?, NULL, ?, ?, ?, ?)',
-        [name || email, email, 'cliente', googleId, picture || null, 'google']
+        [name || email, email, newRole, googleId, picture || null, 'google']
       );
       dbUser = {
         id: result.insertId,
         name: name || email,
         email,
-        role: 'cliente',
+        role: newRole,
         google_id: googleId,
         avatar_url: picture || null,
         auth_provider: 'google'

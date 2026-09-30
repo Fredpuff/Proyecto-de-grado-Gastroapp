@@ -86,23 +86,25 @@ export default function SearchFilters({ filters, cuisines, onChange, onReset }) 
         Limpiar filtros
       </button>
 
-      {cuisines.length > 0 && (
-        <div className="filters-bar-cuisine-row">
-          <span className="filters-bar-cuisine-label">Cocina:</span>
-          <div className="cuisine-pills">
-            {cuisines.map((c) => (
-              <label key={c} className="filter-toggle filter-toggle-sm">
-                <input
-                  type="checkbox"
-                  checked={selectedCuisines.includes(c)}
-                  onChange={() => toggleCuisine(c)}
-                />
-                {c}
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
+      {cuisines.filter((c) => c && c.trim()).length > 0 && (
+  <div className="filters-bar-cuisine-row">
+    <span className="filters-bar-cuisine-label">Cocina:</span>
+    <div className="cuisine-pills">
+      {cuisines
+        .filter((c) => c && c.trim())
+        .map((c) => (
+          <label key={c} className="filter-toggle filter-toggle-sm">
+            <input
+              type="checkbox"
+              checked={selectedCuisines.includes(c)}
+              onChange={() => toggleCuisine(c)}
+            />
+            {c}
+          </label>
+        ))}
+    </div>
+  </div>
+)}
     </div>
   );
 }

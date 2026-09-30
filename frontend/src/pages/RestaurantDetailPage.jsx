@@ -11,6 +11,8 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import RatingSummary from '../components/RatingSummary';
 import PhotoGallery from '../components/PhotoGallery';
+import OpeningHours from '../components/OpeningHours';
+
 
 const SHOW_DIGITAL_MENU = false; // Menú digital oculto temporalmente, se retomará después
 
@@ -229,11 +231,8 @@ export default function RestaurantDetailPage() {
               <br />
               {restaurant.address}
             </p>
-            <p className="info-row">
-              <strong>Horario:</strong>
-              <br />
-              {restaurant.opening_hours}
-            </p>
+            
+              <OpeningHours value={restaurant.opening_hours} />
             {restaurant.phone && (
               <p className="info-row">
                 <strong>Teléfono:</strong>

@@ -375,23 +375,63 @@ function detectZone(formattedAddress, lat, lng) {
   return { zone: UNCLASSIFIED, method: 'sin coincidencia con las 4 zonas' };
 }
 
-// Google no entrega "tipo de cocina" como tal. Se infiere del nombre y de los
-// `types`; si no hay señal, se deja NULL (no se inventa).
+// Normaliza: minúsculas, sin tildes, guiones bajos como espacios
+const normalize = (text) =>
+  String(text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/_/g, ' ');
+
+// Orden: de lo más específico a lo más genérico.
+// Los patrones van sin tildes porque el texto ya se normalizó.
 const CUISINE_HINTS = [
-  [/parrill|asad|carne|steak|grill/, 'Parrilla'],
+  [/sushi|japon|japanese|nikkei|ramen/, 'Japonesa'],
   [/pizz/, 'Pizzería'],
-  [/sushi|japon|nikkei|ramen/, 'Japonesa'],
   [/burg|hamburgues/, 'Hamburguesas'],
   [/taco|mexican|burrito/, 'Mexicana'],
   [/italian|pasta|trattoria|risotto/, 'Italiana'],
-  [/marisc|pescad|cevich|seafood/, 'Mariscos'],
-  [/caf[eé]|cafeter|brunch|reposter|panader|past(e|é)ler/, 'Café / Repostería'],
+  [/peru|cevich|anticuch|lomo saltado/, 'Peruana'],
+  [/marisc|pescad|seafood|fish/, 'Mariscos'],
+  [/\barab|shawarma|liban|lebanese|middle eastern|kebab/, 'Árabe'],
+  [/\bchin(a|o|ese)\b|chifa|\bwok\b/, 'China'],
   [/vegan|vegetarian|plant based/, 'Vegetariana / Vegana'],
-  [/llanero|llanera|mamona|crioll|colombian|típic|tipic/, 'Llanera / Colombiana'],
-  [/arab|shawarma|libanes/, 'Árabe'],
-  [/china|chifa|wok/, 'China'],
-  [/gourmet|bistro|bistró|fusion|fusión|autor/, 'Gourmet / De autor'],
+  [/llaner|mamona|crioll|colombian|tipic/, 'Llanera / Colombiana'],
+  [/\bcafe|coffee|cafeter|brunch|reposter|panader|pasteler|bakery|dessert|postre/, 'Café / Repostería'],
+  [/parrill|asad|steak|grill|barbecue|bbq|carne/, 'Parrilla'],
+  [/gourmet|bistro|fusion|autor|fine dining/, 'Gourmet / De autor'],
 ];
+
+// Detecta la cocina usando todo el texto disponible del restaurante
+export function detectCuisine(restaurant) {
+  const text = normalize(
+    [
+      restaurant.cuisine,
+      restaurant.category,
+      restaurant.name,
+      ...(Array.isArray(restaurant.types) ? restaurant.types : []),
+      restaurant.primaryType,
+      restaurant.description,
+      restaurant.editorialSummary,
+    ]
+      .filter(Boolean)
+      .join(' ')
+  );
+
+  if (!text.trim()) return null;
+
+  for (const [regex, label] of CUISINE_HINTS) {
+    if (regex.test(text)) return label;
+  }
+  return null; // sin match: mejor null que un valor vacío o crudo
+}
+
+// Lista de cocinas para los filtros (sin vacíos ni duplicados)
+export function buildCuisineList(restaurants) {
+  return [
+    ...new Set(restaurants.map(detectCuisine).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b, 'es'));
+}
 
 function inferCuisine(name, types, primaryTypeLabel) {
   const hay = norm(`${name} ${(types || []).join(' ')} ${primaryTypeLabel || ''}`);

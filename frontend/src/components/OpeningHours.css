@@ -1,0 +1,114 @@
+.opening-hours {
+  margin: 16px 0;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.opening-hours-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.opening-hours-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.opening-hours-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.opening-hours-status.is-open {
+  color: #6ee7a8;
+  background: rgba(110, 231, 168, 0.12);
+}
+
+.opening-hours-status.is-closed {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.opening-hours-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.opening-hours-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.opening-hours-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.opening-hours-row + .opening-hours-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.opening-hours-row.is-today {
+  background: rgba(225, 29, 72, 0.12);
+  color: #fff;
+  font-weight: 600;
+  border-top-color: transparent;
+}
+
+.opening-hours-row.is-today + .opening-hours-row {
+  border-top-color: transparent;
+}
+
+.opening-hours-day {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opening-hours-today-tag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #e11d48;
+  color: #fff;
+}
+
+.opening-hours-time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.opening-hours-time.is-closed-day {
+  color: #f87171;
+}
+
+.opening-hours-raw {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
