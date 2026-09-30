@@ -75,13 +75,6 @@ const { recalculateRatingAvg } = require('../src/utils/ratingAvg');
 // -----------------------------------------------------------------------------
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY || '';
-// Clave separada (restringida por HTTP referrer) para las URLs de fotos que
-// ve el navegador -> nunca exponer GOOGLE_PLACES_API_KEY (la del servidor,
-// sin restricción de referrer) en algo que llega al frontend. Si no está
-// configurada, cae de vuelta a la del servidor (funciona, pero sin esa
-// protección). Ver backend/README.md, "Restringir la API key de fotos".
-const GOOGLE_PLACES_PHOTO_KEY = process.env.GOOGLE_PLACES_PHOTO_KEY || GOOGLE_PLACES_API_KEY;
-
 const CITY = 'Villavicencio';
 const REGION = 'co';
 const LANGUAGE = 'es';
@@ -245,7 +238,6 @@ async function fetchWithRetry(url, { as = 'json', method = 'GET', headers = {}, 
 // campos de la ficha (no hace falta un "Place Details" aparte). La Places API
 // "legacy" ya no se puede habilitar en proyectos nuevos de Google Cloud.
 const SEARCH_TEXT_URL = 'https://places.googleapis.com/v1/places:searchText';
-const PHOTO_MEDIA_BASE = 'https://places.googleapis.com/v1';
 
 const FIELD_MASK = [
   'places.id',
@@ -322,12 +314,6 @@ async function textSearchAll(query, locationRestriction = null) {
   } while (pageToken && page < 3);
 
   return results;
-}
-
-function photoUrl(photoName, maxWidthPx = 800) {
-  if (!photoName) return null;
-  const params = new URLSearchParams({ maxWidthPx: String(maxWidthPx), key: GOOGLE_PLACES_PHOTO_KEY });
-  return `${PHOTO_MEDIA_BASE}/${photoName}/media?${params.toString()}`;
 }
 
 // Fija el centroide de cada zona: usa ZONE_CENTERS si está definido; si no, lo
@@ -456,7 +442,6 @@ function toRecord(d) {
     d.regularOpeningHours && Array.isArray(d.regularOpeningHours.weekdayDescriptions)
       ? d.regularOpeningHours.weekdayDescriptions
       : [];
-  const photoName = d.photos && d.photos.length ? d.photos[0].name : null;
 
   const zoning = detectZone(address, loc.latitude, loc.longitude);
 
@@ -479,7 +464,11 @@ function toRecord(d) {
     types: d.types || [],
     lat: loc.latitude != null ? loc.latitude : null,
     lng: loc.longitude != null ? loc.longitude : null,
-    image_url: photoName ? photoUrl(photoName) : null,
+    // Las fotos se sirven por el proxy del backend (/api/restaurants/:id/image),
+    // que las pide a Places con el google_place_id: aquí ya no se guarda una URL
+    // de Google (llevaba la API key y el photo name vence). setIf ignora null,
+    // así que una URL manual puesta por el admin se conserva.
+    image_url: null,
     business_status: d.businessStatus || null,
     // servicios: solo se marca lo que se confirma; ausencia != false
     has_wifi: null,
