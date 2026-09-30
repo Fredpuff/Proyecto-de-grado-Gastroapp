@@ -113,38 +113,23 @@ tenía en vez de ponerlo en 0.
    zonas hace ~8 Text Search + ~100–200 Place Details, muy por debajo del cupo
    gratuito.
 
-### 1b. Restringir la API key de fotos (recomendado)
+### 1b. Fotos de los restaurantes (proxy con caché en disco)
 
-Las URLs de fotos (`image_url`) que ven los restaurantes en el navegador
-llevan la API key incrustada (así lo exige la Photo Media API de Google). Si
-usas la misma clave `GOOGLE_PLACES_API_KEY` del paso 1, esa key queda visible
-en el HTML del frontend para cualquiera que abra las herramientas de
-desarrollador. Para evitarlo, usa **una segunda clave, solo para fotos**,
-restringida a tu(s) dominio(s):
+El navegador nunca pide fotos a Google: usa `GET /api/restaurants/:id/image`
+(foto principal) y `GET /api/restaurants/:id/photos/:index` (galería). El
+backend descarga cada foto **una sola vez** con `GOOGLE_PLACES_API_KEY` (en el
+header, nunca en la URL), la guarda en `backend/storage/photos/` (ignorada por
+git) y de ahí en adelante la sirve desde disco con `Cache-Control` de 30 días.
+Así la key no queda expuesta y no se gasta la cuota gratuita en cada visita.
 
-1. En el mismo proyecto de Google Cloud, ve a **APIs y servicios →
-   Credenciales → Crear credenciales → Clave de API**. Te da una clave nueva.
-2. Haz clic en esa clave nueva para editarla. En **Restricciones de
-   aplicación**, elige **Sitios web (HTTP referrer)**.
-3. Agrega como referrers los orígenes desde donde se va a ver la app:
-   - `http://localhost:5173/*` (desarrollo)
-   - `https://tu-dominio-de-produccion.com/*` (cuando publiques el frontend)
-4. En **Restricciones de API**, restríngela a **Places API**.
-5. Guarda. Copia esa clave y pégala en `backend/.env` como
-   `GOOGLE_PLACES_PHOTO_KEY=`.
-6. **No** le pongas restricción de HTTP referrer a `GOOGLE_PLACES_API_KEY`
-   (la del paso 1): esa la usa el script desde Node, sin navegador, así que
-   nunca manda un header `Referer` y Google le rechazaría todas las
-   peticiones. Esa déjala sin restringir o restríngela por IP si tu servidor
-   tiene IP fija.
-7. Vuelve a correr `npm run collect-data` para que los restaurantes ya
-   guardados actualicen su `image_url` con la nueva clave (los que se
-   insertaron antes de este cambio todavía tienen la key del servidor
-   incrustada hasta que se recolecten de nuevo).
-
-Si `GOOGLE_PLACES_PHOTO_KEY` no está en `.env`, el script sigue funcionando:
-usa `GOOGLE_PLACES_API_KEY` para las fotos también, solo que sin la
-protección de referrer.
+- Los *photo names* de Google vencen: si una foto ya no es válida, el backend
+  vuelve a pedir los nombres a Places **una vez** y reintenta.
+- Si el admin pone en `image_url` una URL manual externa (no de Google), la
+  foto principal redirige a ella.
+- Para descargar de una vez la foto principal de todos los restaurantes:
+  `npm run photos:warm`.
+- Ya no hace falta una clave aparte para fotos (`GOOGLE_PLACES_PHOTO_KEY`):
+  como la key no llega al navegador, no necesita restricción por referrer.
 
 ### 2. Configurar el `.env`
 
