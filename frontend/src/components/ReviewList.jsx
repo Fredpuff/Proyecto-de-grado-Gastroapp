@@ -74,19 +74,25 @@ export default function ReviewList({ reviews, newReviewId, sort, onSortChange, r
         </div>
       )}
 
-      {reviews.length === 0 && <p className="muted">Todavía no hay opiniones. ¡Sé el primero en contar cómo te fue!</p>}
+      {reviews.length === 0 && (
+        <div className="review-card review-card-empty">
+          <p className="muted">Aún no hay opiniones. ¡Sé el primero en contar cómo te fue!</p>
+        </div>
+      )}
 
       {reviews.length > 0 && visible.length === 0 && (
-        <p className="muted">
-          No hay opiniones con {ratingFilter} {ratingFilter === 1 ? 'estrella' : 'estrellas'}.{' '}
-          <button type="button" className="link-button" onClick={() => onRatingFilterChange(0)}>
-            Ver todas
-          </button>
-        </p>
+        <div className="review-card review-card-empty">
+          <p className="muted">
+            No hay opiniones con {ratingFilter} {ratingFilter === 1 ? 'estrella' : 'estrellas'}.{' '}
+            <button type="button" className="link-button" onClick={() => onRatingFilterChange(0)}>
+              Ver todas
+            </button>
+          </p>
+        </div>
       )}
 
       {visible.map((r) => (
-        <article key={r.id} className={r.id === newReviewId ? 'review-item review-item-enter' : 'review-item'}>
+        <article key={r.id} className={r.id === newReviewId ? 'review-card review-item-enter' : 'review-card'}>
           <div className="review-item-head">
             <StarRating value={Number(r.rating)} size={15} showValue={false} />
             {r.sentiment && EXPERIENCE_LABELS[r.sentiment] && (

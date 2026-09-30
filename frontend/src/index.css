@@ -1440,20 +1440,28 @@ img {
   text-decoration: underline;
 }
 
-/* Cada opinión */
+/* Cada opinión, dentro de su propia tarjeta (mismo estilo que el cuadro
+   "¿Ya visitaste este lugar?"). Clase propia para no afectar otras .card. */
 .review-list {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
-.review-list > .review-filters {
-  margin-bottom: 4px;
+.review-card {
+  padding: 16px 18px;
+  background: var(--dark-surface, var(--color-surface));
+  border: 1px solid var(--dark-border, var(--color-border));
+  border-radius: var(--radius-lg);
+  min-width: 0;
+  transition: border-color 200ms ease-out;
 }
-.review-item {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--dark-border, var(--color-border));
+@media (hover: hover) and (pointer: fine) {
+  .review-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
 }
-.review-item:last-child {
-  border-bottom: none;
+.review-card-empty p {
+  margin: 0;
 }
 .review-item-head {
   display: flex;
@@ -1466,8 +1474,8 @@ img {
   font-size: 13.5px;
 }
 .review-item-text {
-  margin: 8px 0 0;
-  line-height: 1.55;
+  margin: 10px 0 0;
+  line-height: 1.6;
   overflow-wrap: anywhere;
   white-space: pre-line;
 }
