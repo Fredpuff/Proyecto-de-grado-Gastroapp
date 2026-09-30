@@ -3,19 +3,25 @@ import { reviewsApi } from '../api/resources';
 import StarInput from './StarInput';
 
 export default function ReviewForm({ restaurantId, onCreated }) {
-  const [rating, setRating] = useState(5);
+  // 0 = sin elegir: antes arrancaba en 5 y parecía que las estrellas ya
+  // estaban marcadas, así que muchas reseñas se enviaban con 5 sin querer.
+  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!rating) {
+      setError('Elige de 1 a 5 estrellas para calificar.');
+      return;
+    }
     setError('');
     setSubmitting(true);
     try {
-      const review = await reviewsApi.create(restaurantId, { rating: Number(rating), comment });
+      const review = await reviewsApi.create(restaurantId, { rating, comment: comment.trim() });
       setComment('');
-      setRating(5);
+      setRating(0);
       onCreated(review);
     } catch (err) {
       setError(err.message);
@@ -25,28 +31,37 @@ export default function ReviewForm({ restaurantId, onCreated }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="card" style={{ padding: 16 }}>
-      <h4 style={{ marginTop: 0 }}>Deja tu reseña</h4>
+    <form onSubmit={handleSubmit} className="card review-form">
+      <h3 className="review-form-title">Escribe tu opinión</h3>
       {error && <div className="alert alert-error">{error}</div>}
 
       <div className="field">
-        <label>Calificación</label>
-        <StarInput id="rating" value={rating} onChange={setRating} disabled={submitting} />
+        <label>¿Cómo calificarías este lugar?</label>
+        <StarInput
+          id="rating"
+          value={rating}
+          onChange={(n) => {
+            setRating(n);
+            setError('');
+          }}
+          disabled={submitting}
+        />
       </div>
 
       <div className="field">
-        <label htmlFor="comment">Comentario (opcional)</label>
+        <label htmlFor="comment">Cuéntanos tu experiencia (opcional)</label>
         <textarea
           id="comment"
           rows={3}
+          maxLength={1000}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Cuéntanos tu experiencia..."
+          placeholder="¿Qué te gustó? ¿Qué se podría mejorar?"
         />
       </div>
 
       <button className="btn btn-primary" type="submit" disabled={submitting}>
-        {submitting ? 'Enviando...' : 'Publicar reseña'}
+        {submitting ? 'Publicando...' : 'Publicar'}
       </button>
     </form>
   );
