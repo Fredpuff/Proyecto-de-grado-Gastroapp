@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Wifi } from 'lucide-react';
-import { restaurantsApi, menuApi, reviewsApi } from '../api/resources';
+import { restaurantsApi, menuApi, reviewsApi, photoUrls } from '../api/resources';
 import { useAuth } from '../context/AuthContext';
 import StarRating from '../components/StarRating';
 import ParkingBadge from '../components/ParkingBadge';
@@ -11,6 +11,7 @@ import ReviewList from '../components/ReviewList';
 import ReviewForm from '../components/ReviewForm';
 import RatingSummary from '../components/RatingSummary';
 import PhotoGallery from '../components/PhotoGallery';
+import RestaurantImagePlaceholder from '../components/RestaurantImagePlaceholder';
 
 const ANALYSIS_POLL_MS = 4000;
 const ANALYSIS_POLL_MAX_ATTEMPTS = 5;
@@ -36,6 +37,7 @@ export default function RestaurantDetailPage() {
   const [ratingFilter, setRatingFilter] = useState(0);
   const [galleryPhotos, setGalleryPhotos] = useState(null);
   const [heroImgFailed, setHeroImgFailed] = useState(false);
+  const [heroImgLoaded, setHeroImgLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newReviewId, setNewReviewId] = useState(null);
@@ -112,6 +114,7 @@ export default function RestaurantDetailPage() {
     setError('');
     setAnalyzingReviewId(null);
     setHeroImgFailed(false);
+    setHeroImgLoaded(false);
     setGalleryPhotos(null);
     setAspects([]);
     setReviewSort('recientes');
@@ -130,7 +133,7 @@ export default function RestaurantDetailPage() {
         setReviews(rv);
         setNearbyParkings(p);
         setAspects(asp);
-        setGalleryPhotos(ph?.photos ?? []);
+        setGalleryPhotos((ph?.photos ?? []).map(photoUrls.fromApiPath));
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -147,6 +150,23 @@ export default function RestaurantDetailPage() {
     );
   if (!restaurant) return null;
 
+  // Foto principal por el proxy del backend; si falla, placeholder del tema.
+  const hero = (
+    <div className="restaurant-detail-hero">
+      {heroImgFailed ? (
+        <RestaurantImagePlaceholder cuisine={restaurant.cuisine_type} iconSize={44} />
+      ) : (
+        <img
+          src={photoUrls.main(restaurant.id)}
+          alt={restaurant.name}
+          className={heroImgLoaded ? 'is-loaded' : undefined}
+          onLoad={() => setHeroImgLoaded(true)}
+          onError={() => setHeroImgFailed(true)}
+        />
+      )}
+    </div>
+  );
+
   const groupedMenu = menu.reduce((acc, item) => {
     acc[item.category] = acc[item.category] || [];
     acc[item.category].push(item);
@@ -161,18 +181,9 @@ export default function RestaurantDetailPage() {
         </Link>
 
         {galleryPhotos && galleryPhotos.length > 0 ? (
-          <PhotoGallery photos={galleryPhotos} altPrefix={restaurant.name} />
+          <PhotoGallery photos={galleryPhotos} altPrefix={restaurant.name} fallback={hero} />
         ) : (
-          restaurant.image_url && !heroImgFailed && (
-            <div className="restaurant-detail-hero">
-              <img
-                src={restaurant.image_url}
-                alt={restaurant.name}
-                loading="lazy"
-                onError={() => setHeroImgFailed(true)}
-              />
-            </div>
-          )
+          hero
         )}
 
       <div>

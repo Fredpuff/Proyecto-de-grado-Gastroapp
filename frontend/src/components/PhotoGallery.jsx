@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-export default function PhotoGallery({ photos, altPrefix = 'Foto' }) {
+// `fallback` se muestra si ninguna foto carga (p. ej. la foto principal o un placeholder).
+export default function PhotoGallery({ photos, altPrefix = 'Foto', fallback = null }) {
   const [current, setCurrent] = useState(0);
   const [failedIndexes, setFailedIndexes] = useState(new Set());
 
   const visible = photos.filter((_, i) => !failedIndexes.has(i));
 
-  if (visible.length === 0) return null;
+  if (visible.length === 0) return fallback;
 
   const safeCurrent = Math.min(current, visible.length - 1);
 

@@ -1,4 +1,14 @@
-import { api } from './client';
+import { api, API_URL } from './client';
+
+// Las fotos las sirve el backend (proxy con caché): el navegador nunca las
+// pide a Google. Las rutas que devuelve la API (/api/...) se completan con el
+// origen de la API configurada.
+const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
+
+export const photoUrls = {
+  main: (restaurantId) => `${API_URL}/restaurants/${restaurantId}/image`,
+  fromApiPath: (path) => (typeof path === 'string' && path.startsWith('/api/') ? `${API_ORIGIN}${path}` : path)
+};
 
 function toQueryString(params = {}) {
   const parts = [];

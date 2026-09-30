@@ -1,29 +1,32 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Wifi } from 'lucide-react';
+import { photoUrls } from '../api/resources';
 import StarRating from './StarRating';
 import ParkingBadge from './ParkingBadge';
 import PriceIndicator from './PriceIndicator';
-
-function initials(name) {
-  return name
-    .split(' ')
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase();
-}
+import RestaurantImagePlaceholder from './RestaurantImagePlaceholder';
 
 export default function RestaurantCard({ restaurant }) {
-  const { id, name, cuisine_type, price_range, neighborhood, rating_avg, parking_type, has_wifi, image_url } =
-    restaurant;
+  const { id, name, cuisine_type, price_range, neighborhood, rating_avg, parking_type, has_wifi } = restaurant;
+  const [imgFailed, setImgFailed] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <Link to={`/restaurantes/${id}`} className="card restaurant-card-link">
       <div className="restaurant-card-media">
-        {image_url ? (
-          <img src={image_url} alt={name} loading="lazy" />
+        {imgFailed ? (
+          <RestaurantImagePlaceholder cuisine={cuisine_type} />
         ) : (
-          <span className="restaurant-card-initials">{initials(name)}</span>
+          // Invisible hasta que carga: si falla nunca se ve el ícono de imagen rota.
+          <img
+            src={photoUrls.main(id)}
+            alt=""
+            loading="lazy"
+            className={imgLoaded ? 'is-loaded' : undefined}
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgFailed(true)}
+          />
         )}
         <span className="restaurant-card-price-chip">
           <PriceIndicator priceRange={price_range} />
