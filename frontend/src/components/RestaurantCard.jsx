@@ -1,16 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Wifi } from 'lucide-react';
-import { photoUrls } from '../api/resources';
-import StarRating from './StarRating';
+import { reviewsApi, photoUrls } from '../api/resources';
+import RatingSummary from './RatingSummary';
 import ParkingBadge from './ParkingBadge';
 import PriceIndicator from './PriceIndicator';
 import RestaurantImagePlaceholder from './RestaurantImagePlaceholder';
 
 export default function RestaurantCard({ restaurant }) {
-  const { id, name, cuisine_type, price_range, neighborhood, rating_avg, parking_type, has_wifi } = restaurant;
+  const { id, name, cuisine_type, price_range, neighborhood, parking_type, has_wifi } = restaurant;
   const [imgFailed, setImgFailed] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [reviews, setReviews] = useState(null);
+
+  // Mismas reseñas que usa la página de detalle, para que el promedio sea idéntico.
+  useEffect(() => {
+    let cancelled = false;
+    reviewsApi
+      .listByRestaurant(id)
+      .then((rv) => {
+        if (!cancelled) setReviews(rv);
+      })
+      .catch(() => {
+        if (!cancelled) setReviews([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   return (
     <Link to={`/restaurantes/${id}`} className="card restaurant-card-link">
@@ -41,7 +58,12 @@ export default function RestaurantCard({ restaurant }) {
         </p>
 
         <div className="restaurant-card-footer">
-          <StarRating value={Number(rating_avg)} />
+          {reviews ? (
+            <RatingSummary reviews={reviews} onlyStars starsSize={16} />
+          ) : (
+            <div className="skeleton-line" style={{ width: 110, height: 16 }} />
+          )}
+
           <div className="restaurant-card-badges">
             {!!has_wifi && (
               <span className="badge">

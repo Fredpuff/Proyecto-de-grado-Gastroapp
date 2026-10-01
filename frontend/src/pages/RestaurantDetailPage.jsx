@@ -175,7 +175,7 @@ export default function RestaurantDetailPage() {
               <PriceIndicator priceRange={restaurant.price_range} />
             </p>
           </div>
-          <StarRating value={Number(restaurant.rating_avg)} size={20} />
+          <RatingSummary reviews={reviews} onlyStars />
         </div>
 
         <div className="detail-badges">

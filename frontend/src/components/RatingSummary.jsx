@@ -32,7 +32,7 @@ function buildHighlights(aspects = []) {
 
 // Calcula promedio, conteo y distribución desde la lista de reseñas que ya
 // tiene la página: así todo se actualiza al instante al publicar una nueva.
-export function summarizeReviews(reviews) {
+export function summarizeReviews(reviews = []) {
   const breakdown = [5, 4, 3, 2, 1].map((rating) => ({
     rating,
     count: reviews.filter((r) => Number(r.rating) === rating).length
@@ -43,8 +43,33 @@ export function summarizeReviews(reviews) {
   return { ratingAvg, totalCount, breakdown };
 }
 
-export default function RatingSummary({ reviews, aspects, selectedRating, onSelectRating }) {
+export default function RatingSummary({
+  reviews = [],
+  aspects,
+  selectedRating,
+  onSelectRating,
+  onlyStars = false,
+  starsSize = 20
+}) {
   const { ratingAvg, totalCount, breakdown } = summarizeReviews(reviews);
+
+  // Modo compacto: solo las estrellas del promedio.
+    // Modo compacto: estrellas del promedio con la calificación.
+  if (onlyStars) {
+    return (
+      <div
+        className="rating-summary-stars-only"
+        aria-label={`${ratingAvg.toFixed(1)} de 5 estrellas`}
+        style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+      >
+        <StarRating value={ratingAvg} size={starsSize} showValue={false} />
+        <span className="rating-summary-stars-value">
+          {totalCount ? ratingAvg.toFixed(1) : '0.0'}
+        </span>
+      </div>
+    );
+  }
+
   const { liked, disliked } = buildHighlights(aspects);
 
   if (totalCount === 0) {

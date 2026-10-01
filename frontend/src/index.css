@@ -470,17 +470,30 @@ img {
 .price-indicator {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  vertical-align: middle;
+  gap: 6px;
+  line-height: 1;
 }
-.price-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-border);
+
+.price-signs {
+  display: inline-flex;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
 }
-.price-dot-filled {
-  background: var(--color-accent);
+
+.price-sign {
+  color: currentColor;
+  opacity: 0.3;
+}
+
+.price-sign-active {
+  color: #e8a33d;
+  opacity: 1;
+}
+
+.price-label {
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .restaurant-card-meta {
